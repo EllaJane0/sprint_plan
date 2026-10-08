@@ -71,11 +71,14 @@ repo may be private, and dates, messages, and file names are enough.
 - **What took the most time.** By session duration and prompt volume, not by commit count.
 - **Which axis this advanced.** Pick exactly one, from the work itself rather than from what
   they intended:
-  - **Agentic Workflow**: directing the agent, CLAUDE.md, slash commands, subagents, specs
+  - **Agentic Workflow**: directing the agent, CLAUDE.md, slash commands, subagents, specs;
+    building AI into the product: prompts, tool use, agent loops, evals
   - **Discovery**: users, interviews, problem framing, validation, positioning research
   - **Design**: interface, layout, flow, usability, responsive work
-  - **Application Architecture**: data, auth, APIs, deployment, tests, refactoring
-  - **AI Systems**: model calls in the product, prompts in the product, evals
+  - **Application Architecture**: data, auth, APIs, deployment, tests, refactoring, wiring a
+    model in (API calls, retrieval pipelines, cost and latency)
+  - **AI Systems**: learning how the models work: neural networks, next-word prediction,
+    training and fine-tuning, embeddings and RAG, context windows, why models hallucinate
   - **Launch and Learn**: landing pages, acquisition, pricing, analytics, metrics
   If it is genuinely split, name the one with the most time and say so.
 
