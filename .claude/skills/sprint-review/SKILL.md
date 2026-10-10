@@ -70,7 +70,8 @@ python3 <skill-dir>/scripts/sprint_scan.py --since <ISO date> --learning .
 ```
 
 It reads only `learning/YYYY-MM-DD-*.md` in this repo: the section, time, whether it finished,
-confidence, and the question the builder still had.
+the sprint and axis it was logged against, how it connects to the sprint, confidence, and the
+question the builder still had, plus a count by axis.
 
 ### 5. Work out what happened
 
@@ -121,8 +122,12 @@ URL. For a repo that is not shared, a short list of its commits in the window: d
 
 ## Learning sessions
 
-<count of /learn sessions logged in the window. For each: date, section, minutes, confidence
-1 to 5, and the question they still had. "None logged this sprint" if there were none. Facts
+<count of /learn sessions logged in the window, and the count by axis. For each: date, section,
+axis, minutes, how it connects to the sprint, confidence 1 to 5, and the question they still
+had. Then one plain sentence putting learning beside building: which axes they studied and which
+axis the sprint's work advanced (from the Axis section below), for example "You studied three
+Architecture sections and the sprint advanced Architecture" or "You studied Design; the sprint's
+work was Discovery." State it; do not judge it. "None logged this sprint" if there were none. Facts
 only: not a grade, no judgment of how many is enough, no check scores>
 
 ## Axis

@@ -7,6 +7,8 @@ and commits it. This log is a record of learning, not a score.
 **Date:** YYYY-MM-DD
 **Time:** [start] to [end] ([N] minutes)
 **Finished:** [yes, or "stopped after" the step you reached]
+**Sprint:** [N, or "none"]
+**Axis:** [the section's axis]
 
 ## In my own words
 
@@ -15,6 +17,10 @@ and commits it. This log is a record of learning, not a score.
 ## Misconceptions
 
 - [the wrong model, in a phrase]: [resolved / not yet resolved]
+
+## How this connects to my sprint
+
+[how this section bears on your sprint goal, or "Not connected to this sprint; matters later for ..."]
 
 ## Applied to my project
 

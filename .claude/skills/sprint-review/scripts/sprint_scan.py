@@ -237,14 +237,23 @@ def cmd_learning(since, repo):
             "file": f"learning/{f.name}",
             "section": title.group(1).strip() if title else f.stem,
             "finished": field(text, "Finished"),
+            "sprint": field(text, "Sprint"),
+            "axis": field(text, "Axis"),
+            "connects": field(text, "How this connects to my sprint"),
             "time": field(text, "Time"),
             "confidence": field(text, "Confidence"),
             "question": field(text, "Still wondering"),
         })
     print(f"LEARNING SESSIONS: {len(logs)}")
+    axes = {}
+    for g in logs:
+        if g["axis"]:
+            axes[g["axis"]] = axes.get(g["axis"], 0) + 1
+    if axes:
+        print("  by axis: " + ", ".join(f"{k} {v}" for k, v in sorted(axes.items(), key=lambda x: -x[1])))
     for g in logs:
         print(f"\n  {g['day']}  {g['section']}  ({g['file']})")
-        for k in ("time", "finished", "confidence", "question"):
+        for k in ("time", "finished", "sprint", "axis", "connects", "confidence", "question"):
             if g[k]:
                 print(f"    {k}: {g[k][:300]}")
 

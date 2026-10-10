@@ -53,13 +53,26 @@ In two or three lines: name the section, say the session runs 30 to 60 minutes, 
 a natural place to stop around the 30-minute mark if they need to leave. Note the start time
 (the Fetched line, or the shell's `date`).
 
-### 1. Read their project
+### 1. Read their project and their sprint
 
 Before teaching, read what the builder is working on so every example can be theirs: `README.md`
-(role, what they are working on, who it is for), `CLAUDE.md`, the highest
-`sprints/sprint-N-plan.md`, and the parts of `product/` or other code the section touches. Read
-only; change nothing. If the README context is blank, ask in one question what they are building
-and who it is for.
+(role, what they are working on, who it is for), `CLAUDE.md`, and the parts of `product/` or
+other code the section touches. Read only; change nothing. If the README context is blank, ask in
+one question what they are building and who it is for.
+
+Then read the current sprint plan, the highest-numbered `sprints/sprint-N-plan.md` (including any
+dated `**Changes:**` notes): its goal, what it will produce, and which axis it targets. Work out
+how this section connects to that sprint and say so in one line before teaching, for example:
+"Your sprint is getting your first ten real users. This section on activation is about whether
+they stay." If the section does not connect to this sprint (a Launch section during an
+Architecture sprint), say that plainly in one line, teach it on their product in general, and
+note where it will matter later. Never force a connection that is not there. If there is no
+sprint plan, skip this and use the product.
+
+The section's axis comes from its chapter: 01 to 02 Agentic Workflow, 03 to 04 Discovery, 05 to
+06 Design, 07 to 09 Application Architecture, 10 AI Systems, 11 AI Systems for how models behave
+and Agentic Workflow for building AI into the product (use the section's own topic), 12 to 15
+Launch and Learn.
 
 ### 2. Diagnose (about 5 minutes)
 
@@ -89,6 +102,9 @@ that as beyond the book.
 ### 4. Work it on their product (10 to 15 minutes)
 
 Apply the model to what they are building: their screens, their data, their users, their plan.
+Where the section connects to their sprint, set the examples in the sprint's actual work: the
+feature, the interviews, or the launch they committed to this sprint. The section still sets what
+is taught; the sprint sets where it is practiced.
 Point at real files and real decisions in their repo. Then:
 
 - **Explain it back.** Ask them to explain the model in their own words, applied to their
@@ -109,9 +125,11 @@ another 15 to 30 minutes). If they stop, go to step 7 and log where they stopped
 
 ### 5. One hands-on task in their repo (10 to 15 minutes)
 
-When the section allows it, give one small task that uses the model in their own repo: a
+When the section allows it, give one small task that uses the model in their own repo, and where
+the section connects to the sprint, make it a small step on the sprint's real work: a
 `CLAUDE.md` rule, a spec, an empty state on one screen, a metric definition, an interview
-question, a test. They do the thinking; you may make the change they direct. Some sections
+question, a test. They do the thinking; you may make the change they direct. Keep it a small learning exercise:
+it is not a way to get the sprint's deliverables done for them. Some sections
 (strategy, storytelling) have no code task; make it a short written artifact in the right folder
 instead, or skip this step and say why.
 
@@ -158,6 +176,8 @@ use the shape below. Create `learning/` if it is missing.
 **Date:** YYYY-MM-DD
 **Time:** <start> to <end> (<N> minutes)
 **Finished:** yes / stopped after <step name>
+**Sprint:** <N, from sprints/sprint-N-plan.md, or "none">
+**Axis:** <the section's axis>
 
 This log is a record of learning, not a score.
 
@@ -169,6 +189,11 @@ This log is a record of learning, not a score.
 
 - <the wrong model, in a phrase>: resolved / not yet resolved
 (or "None came up.")
+
+## How this connects to my sprint
+
+<one or two sentences: how this section bears on the sprint goal, or "Not connected to this
+sprint; matters later for <what>.">
 
 ## Applied to my project
 
@@ -213,3 +238,5 @@ No emoji. No em dashes.
   points at one building block.
 - If they quit early, still write and commit the log, with where they stopped.
 - Never write their words for them in the log.
+- Never edit the sprint plan. If the session changes how they think about their sprint, suggest
+  they update the plan with `/sprint-plan`, which records a dated change note.
