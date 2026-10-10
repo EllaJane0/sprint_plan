@@ -27,6 +27,8 @@ a brand new session act like a colleague who already knows what you are working 
 - Meaningful choices get a numbered record in `decisions/`, written when the choice is made,
   including what was rejected and why.
 - Sprint plans and reviews live in `sprints/`. The plan is committed and submitted on Canvas by the sprint's first Wednesday, and may change later with a `**Changes:**` note.
+- `/learn <section link>` tutors one section of the course book on this product and commits a
+  log to `learning/`. Those logs are a record of learning, not a grade.
 - Never put real names, emails, or phone numbers in this repo. Anonymize.
 
 ## Tools and conventions

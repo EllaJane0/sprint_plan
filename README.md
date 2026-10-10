@@ -43,6 +43,7 @@ Everything someone would need to check your output. List each place on its own l
 | `gtm/` | Launch, channels, copy, experiments |
 | `metrics/` | What you measure and what it says |
 | `decisions/` | Numbered records of what you decided and why |
+| `learning/` | One log per `/learn` session: what you explained, what you applied, what you still wonder |
 
 Not everyone in this course writes software. An interview, a pricing model, a landing page
 draft, and a usability finding are all artifacts, and they get committed like anything else.
@@ -64,6 +65,26 @@ Each sprint:
 # ...do the work...
 /sprint-review   # on or before the Monday the sprint ends: writes the report, asks your five retro questions, then commit
 ```
+
+## Learning a section
+
+Every section of the [course book](https://byu-strategy.github.io/product-management/) ends with
+a line like `/learn https://byu-strategy.github.io/product-management/...#section`. Paste it into
+Claude Code for a 30 to 60 minute tutoring session on that section, worked on your own product.
+It ends with a five-question check and commits a log to `learning/`.
+
+### Get /learn in an existing repo
+
+If you made your repo before `/learn` existed, run this once from your repo's folder, in the
+VS Code terminal (Git Bash on Windows). It copies the skill, the log template, and the updated
+`/sprint-review`, which lists your learning sessions:
+
+```bash
+B=https://raw.githubusercontent.com/byu-strategy/builder-template/main; for f in .claude/skills/learn/SKILL.md .claude/skills/learn/scripts/fetch_section.mjs learning/000-learning-template.md .claude/skills/sprint-review/SKILL.md .claude/skills/sprint-review/scripts/sprint_scan.py; do curl -fsSL --create-dirs -o "$f" "$B/$f" || echo "Could not download $f"; done
+```
+
+Then commit the new files (`git add .claude learning && git commit -m "Add /learn"`) and start
+a new Claude Code session so it picks up the skill.
 
 ## Ground rules
 
