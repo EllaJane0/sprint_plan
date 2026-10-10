@@ -1,17 +1,23 @@
 ---
 name: learn
-description: Learn one section of the MSB 341 course book with a tutor, in 30 to 60 minutes. Fetches the section's exact text, asks what the builder already knows, teaches the section's one mental model using their own product, has them explain it back, predict, and try it in their repo, then runs a five-question check and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
+description: Learn one section of the MSB 341 course book with a tutor, for as long as the builder chooses. Fetches the section's exact text, asks how much time they have and what they already know, teaches the section's one mental model from first principles using their own product, has them explain it back, predict, and try it in their repo, then runs a five-question check and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
 argument-hint: "[section link from the course book]"
 allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 ---
 
 # Learn
 
-Teach one `##` section of the course book, in a session of 30 to 60 minutes. The builder reads
-the chapter; this is where they find out whether they understood it and make it work on their
-own product. The goal is an accurate mental model, not syntax: the building blocks of the idea
-and how they combine, well enough that the builder can predict what happens, explain why, and
-catch an agent's mistake.
+Teach one `##` section of the course book, at the depth the builder has time for. The builder
+reads the chapter; this is where they find out whether they understood it and make it work on
+their own product.
+
+**Teach from first principles.** The goal is an accurate mental model, not syntax: the
+fundamental building blocks of the idea and how they combine, well enough that the builder can
+predict what happens, explain why, and catch an agent's mistake. Build understanding up from
+those blocks instead of handing over rules or reasoning by analogy. Before you state a
+consequence, ask the builder to derive it from the blocks. Use an analogy only when it is
+accurate, as an illustration of the model rather than a substitute for it, and say where it
+breaks. Syntax and commands are reference, shown only when reading them builds the model.
 
 ## The section
 
@@ -49,9 +55,29 @@ Ask one question at a time and wait for the answer. Never stack questions in one
 
 ### 0. Open
 
-In two or three lines: name the section, say the session runs 30 to 60 minutes, and say there is
-a natural place to stop around the 30-minute mark if they need to leave. Note the start time
-(the Fetched line, or the shell's `date`).
+Name the section in one line, then ask one question: how much time do they have right now?
+Offer these, and let them answer in their own words:
+
+- **Quick** (about 15 minutes): the core model and a two-question check.
+- **Standard** (about 30 minutes): the model worked on their product, and a three-question check.
+- **Deep** (an hour or more): everything, including a hands-on task in their repo and a
+  five-question check.
+- **Open-ended**: deep, and you offer a stopping point after each step.
+
+Their answer sets the plan. Say in one line what this session will cover, and that they can
+stop or go deeper at any point. Do not mention time again unless they ask; pace by the plan,
+not the clock. Note the start time quietly (the Fetched line, or the shell's `date`) for the
+log.
+
+| Step | Quick | Standard | Deep / open-ended |
+|---|---|---|---|
+| 1. Read project and sprint | yes | yes | yes |
+| 2. Diagnose | one question | up to three | up to three |
+| 3. Teach the model | yes | yes | yes, plus a second predict question |
+| 4. Work it on their product | explain-back only | yes | yes |
+| 5. Hands-on task | no | offer it if time allows | yes |
+| 6. Check | two questions | three questions | five questions |
+| 7. Close and log | yes | yes | yes |
 
 ### 1. Read their project and their sprint
 
@@ -74,14 +100,14 @@ The section's axis comes from its chapter: 01 to 02 Agentic Workflow, 03 to 04 D
 and Agentic Workflow for building AI into the product (use the section's own topic), 12 to 15
 Launch and Learn.
 
-### 2. Diagnose (about 5 minutes)
+### 2. Diagnose
 
-Ask at most three short questions to find out what they already know about this section's idea.
+Ask at most three short questions (one in a quick session) to find out what they already know about this section's idea.
 Make them questions that reveal understanding, not recall: "What do you think happens when...",
 "How would you explain X to a teammate?" If an answer shows they have a piece, skip teaching it.
 If they say they know none of it, start from the beginning without a quiz.
 
-### 3. Teach the one mental model (about 10 minutes)
+### 3. Teach the one mental model, from first principles
 
 Every section has one central model. Find it in the text (sections often state it as
 **The model:**). Teach it in this order:
@@ -99,7 +125,7 @@ same sentence: "Beyond the book: ...". If the section looks outdated or wrong (a
 interface or a feature has changed), say so plainly, say what you believe is current, and mark
 that as beyond the book.
 
-### 4. Work it on their product (10 to 15 minutes)
+### 4. Work it on their product
 
 Apply the model to what they are building: their screens, their data, their users, their plan.
 Where the section connects to their sprint, set the examples in the sprint's actual work: the
@@ -119,11 +145,10 @@ note of each one and whether the next answer showed it was resolved.
 Be encouraging and honest. Say what was right in an answer and what was not. Never call a wrong
 answer right.
 
-**The 30-minute stop.** Around the 30-minute mark, at the end of this step, say this is a natural
-place to stop and ask whether they want to keep going (the hands-on task and the check take
-another 15 to 30 minutes). If they stop, go to step 7 and log where they stopped.
+**Stopping.** The builder can stop at any point. In an open-ended session, offer a stopping
+point at the end of each step. Wherever they stop, go to step 7 and log where they stopped.
 
-### 5. One hands-on task in their repo (10 to 15 minutes)
+### 5. One hands-on task in their repo
 
 When the section allows it, give one small task that uses the model in their own repo, and where
 the section connects to the sprint, make it a small step on the sprint's real work: a
@@ -138,9 +163,10 @@ no force pushes, no new dependencies without asking. Normal permission prompts a
 changed. Whether to keep and commit the task's work is their call; it is not part of the
 learning log commit.
 
-### 6. Five-question check (about 10 minutes)
+### 6. Check
 
-Write five fresh questions from this section in the course exam style: a short realistic
+Write fresh questions from this section in the course exam style (two, three, or five, by the
+plan from step 0): a short realistic
 scenario (40 to 90 words), one question ("What is the best next step?", "What is the most likely
 cause?"), four options A to D, one best answer. Every option should be something a reasonable
 person might choose, and each wrong option should be the answer someone with a specific
@@ -176,6 +202,7 @@ use the shape below. Create `learning/` if it is missing.
 **Date:** YYYY-MM-DD
 **Time:** <start> to <end> (<N> minutes)
 **Finished:** yes / stopped after <step name>
+**Session:** quick / standard / deep / open-ended
 **Sprint:** <N, from sprints/sprint-N-plan.md, or "none">
 **Axis:** <the section's axis>
 
@@ -201,7 +228,7 @@ sprint; matters later for <what>.">
 
 ## Check
 
-<n>/5. Missed: <the idea behind each miss, in a phrase>, or "none".
+<n>/<total>. Missed: <the idea behind each miss, in a phrase>, or "none".
 (or "Not taken; stopped early.")
 
 ## Confidence

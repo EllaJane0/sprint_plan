@@ -70,8 +70,8 @@ Each sprint:
 
 Every section of the [course book](https://byu-strategy.github.io/product-management/) ends with
 a line like `/learn https://byu-strategy.github.io/product-management/...#section`. Paste it into
-Claude Code for a 30 to 60 minute tutoring session on that section, worked on your own product.
-It ends with a five-question check and commits a log to `learning/`.
+Claude Code for a tutoring session on that section, as short or as deep as you have time for, worked on your own product.
+It ends with a short check and commits a log to `learning/`.
 
 ### Get /learn in an existing repo
 

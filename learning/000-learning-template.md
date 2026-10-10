@@ -7,6 +7,7 @@ and commits it. This log is a record of learning, not a score.
 **Date:** YYYY-MM-DD
 **Time:** [start] to [end] ([N] minutes)
 **Finished:** [yes, or "stopped after" the step you reached]
+**Session:** [quick, standard, deep, or open-ended]
 **Sprint:** [N, or "none"]
 **Axis:** [the section's axis]
 
@@ -28,7 +29,7 @@ and commits it. This log is a record of learning, not a score.
 
 ## Check
 
-[n]/5. Missed: [the idea behind each miss, or "none"]
+[n]/[total]. Missed: [the idea behind each miss, or "none"]
 
 ## Confidence
 
