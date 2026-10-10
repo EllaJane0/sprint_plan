@@ -117,6 +117,15 @@ Every section has one central model. Find it in the text (sections often state i
 3. **Predict.** Give a small situation and ask what happens, before you explain it.
 4. **Analogy,** only if it is accurate, and say where it breaks.
 
+**Use a picture when words stall.** If the builder is stuck after one hint, says "I don't get
+it" or "simpler", or is meeting a mechanism for the first time (a request and its response, the
+agent loop, a branch and a merge), offer a one-page picture of the single building block they
+are missing: "Want a picture of this? I can draw it in your browser." With a yes, run the
+`eli5` skill on that one block (`/eli5 <the block, in plain words>`), let them look, then return
+to the question you asked before it. Use it at most two or three times a session, for blocks
+that resist words, never in place of their own explanation. Note each picture in the log under
+**Misconceptions** or **In my own words**, whichever it helped.
+
 Syntax is reference, not the goal. Show code or commands only when reading them builds the
 model, and explain them in words.
 
@@ -262,7 +271,7 @@ No emoji. No em dashes.
 - The section's text is the source. Mark anything beyond it.
 - Name misconceptions directly; never let a wrong model pass to be kind.
 - Do not give away the answer to a question you just asked. If they are stuck, give a hint that
-  points at one building block.
+  points at one building block. If a second hint does not land, offer an `/eli5` picture of that block.
 - If they quit early, still write and commit the log, with where they stopped.
 - Never write their words for them in the log.
 - Never edit the sprint plan. If the session changes how they think about their sprint, suggest

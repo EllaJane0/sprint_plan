@@ -73,14 +73,19 @@ a line like `/learn https://byu-strategy.github.io/product-management/...#sectio
 Claude Code for a tutoring session on that section, as short or as deep as you have time for, worked on your own product.
 It ends with a short check and commits a log to `learning/`.
 
+When an idea will not click in words, type `/eli5 <the idea>` (or say "explain it like I'm
+five"). Claude draws a one-page picture of it with very few words, saves it under
+`learning/eli5/`, and opens it in your browser. `/learn` offers this on its own when you get
+stuck.
+
 ### Get /learn in an existing repo
 
 If you made your repo before `/learn` existed, run this once from your repo's folder, in the
-VS Code terminal (Git Bash on Windows). It copies the skill, the log template, and the updated
+VS Code terminal (Git Bash on Windows). It copies the skill, the log template, `/eli5`, and the updated
 `/sprint-review`, which lists your learning sessions:
 
 ```bash
-B=https://raw.githubusercontent.com/byu-strategy/builder-template/main; for f in .claude/skills/learn/SKILL.md .claude/skills/learn/scripts/fetch_section.mjs learning/000-learning-template.md .claude/skills/sprint-review/SKILL.md .claude/skills/sprint-review/scripts/sprint_scan.py; do curl -fsSL --create-dirs -o "$f" "$B/$f" || echo "Could not download $f"; done
+B=https://raw.githubusercontent.com/byu-strategy/builder-template/main; for f in .claude/skills/learn/SKILL.md .claude/skills/learn/scripts/fetch_section.mjs .claude/skills/eli5/SKILL.md .claude/skills/eli5/LICENSE learning/000-learning-template.md .claude/skills/sprint-review/SKILL.md .claude/skills/sprint-review/scripts/sprint_scan.py; do curl -fsSL --create-dirs -o "$f" "$B/$f" || echo "Could not download $f"; done
 ```
 
 Then commit the new files (`git add .claude learning && git commit -m "Add /learn"`) and start
