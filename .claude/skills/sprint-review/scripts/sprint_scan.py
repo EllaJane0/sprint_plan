@@ -202,12 +202,60 @@ def cmd_analyze(since, wanted):
         print(f"  [{ts[:16]}] {one[:220]}")
 
 
+def field(text, label):
+    """The value after **Label:** on one line, or the paragraph under a ## Label heading."""
+    import re
+    m = re.search(r"^\*\*" + re.escape(label) + r":\*\*\s*(.+)$", text, re.M)
+    if m:
+        return m.group(1).strip()
+    m = re.search(r"^##\s+" + re.escape(label) + r"\s*\n+(.*?)(?=\n##\s|\Z)", text, re.M | re.S)
+    if m:
+        return " ".join(m.group(1).split())
+    return ""
+
+
+def cmd_learning(since, repo):
+    """List the /learn sessions logged in learning/ during the window. Facts only, no score."""
+    import re
+    folder = Path(repo) / "learning"
+    day0 = since.date()
+    logs = []
+    for f in sorted(folder.glob("*.md")) if folder.is_dir() else []:
+        m = re.match(r"(\d{4}-\d{2}-\d{2})-", f.name)
+        if not m:
+            continue                      # skips 000-learning-template.md
+        try:
+            day = dt.date.fromisoformat(m.group(1))
+        except ValueError:
+            continue
+        if day < day0:
+            continue
+        text = f.read_text(errors="replace")
+        title = re.search(r"^#\s+(?:Learning log:\s*)?(.+)$", text, re.M)
+        logs.append({
+            "day": day.isoformat(),
+            "file": f"learning/{f.name}",
+            "section": title.group(1).strip() if title else f.stem,
+            "finished": field(text, "Finished"),
+            "time": field(text, "Time"),
+            "confidence": field(text, "Confidence"),
+            "question": field(text, "Still wondering"),
+        })
+    print(f"LEARNING SESSIONS: {len(logs)}")
+    for g in logs:
+        print(f"\n  {g['day']}  {g['section']}  ({g['file']})")
+        for k in ("time", "finished", "confidence", "question"):
+            if g[k]:
+                print(f"    {k}: {g[k][:300]}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--since", required=True, help="ISO date, e.g. 2026-10-12")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--analyze", action="store_true")
     ap.add_argument("--projects", nargs="*", default=[])
+    ap.add_argument("--learning", metavar="REPO", help="list /learn logs in REPO/learning/ since --since")
     a = ap.parse_args()
 
     try:
@@ -217,14 +265,16 @@ def main():
     if since.tzinfo is None:
         since = since.replace(tzinfo=dt.timezone.utc)
 
-    if a.list:
+    if a.learning:
+        cmd_learning(since, a.learning)
+    elif a.list:
         cmd_list(since)
     elif a.analyze:
         if not a.projects:
             sys.exit("--analyze needs --projects")
         cmd_analyze(since, a.projects)
     else:
-        sys.exit("Pass --list or --analyze")
+        sys.exit("Pass --list, --analyze, or --learning")
 
 
 if __name__ == "__main__":

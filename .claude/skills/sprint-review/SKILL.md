@@ -63,6 +63,15 @@ repo among the confirmed projects. For each, summarize its commits in the window
 and messages. Never copy code or file contents from another repo into the report; a company
 repo may be private, and dates, messages, and file names are enough.
 
+Then list the `/learn` sessions logged in this repo during the window:
+
+```bash
+python3 <skill-dir>/scripts/sprint_scan.py --since <ISO date> --learning .
+```
+
+It reads only `learning/YYYY-MM-DD-*.md` in this repo: the section, time, whether it finished,
+confidence, and the question the builder still had.
+
 ### 5. Work out what happened
 
 - **When they worked.** Which days, and whether it was spread or bunched.
@@ -109,6 +118,12 @@ URL. For a repo that is not shared, a short list of its commits in the window: d
 ## What took the most time
 
 <by session time and prompt volume>
+
+## Learning sessions
+
+<count of /learn sessions logged in the window. For each: date, section, minutes, confidence
+1 to 5, and the question they still had. "None logged this sprint" if there were none. Facts
+only: not a grade, no judgment of how many is enough, no check scores>
 
 ## Axis
 
@@ -182,3 +197,5 @@ If they want to change an answer later, they edit the file and commit again; tha
 - Never copy transcript text into the report. Summarize.
 - Never name an excluded project. Report the count only.
 - If no sessions are found, say so and write the report from git alone.
+- Learning sessions are reported, never graded or scored. Do not copy check results into the
+  report.
