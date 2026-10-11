@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Learn one section of the MSB 341 course book with a tutor, for as long as the builder chooses. Fetches the section's exact text, asks how much time they have and what they already know, teaches the section's one mental model from first principles using their own product, has them explain it back, predict, and try it in their repo, then runs a five-question check and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
+description: Learn one section of the MSB 341 course book with a tutor, for as long as the builder chooses. Fetches the section's exact text, asks how much time they have and what they already know, teaches the section's one mental model from first principles, has them explain it back and predict what it implies, then runs a five-question check and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
 argument-hint: "[section link from the course book]"
 allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 ---
@@ -8,8 +8,13 @@ allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 # Learn
 
 Teach one `##` section of the course book, at the depth the builder has time for. The builder
-reads the chapter; this is where they find out whether they understood it and make it work on
-their own product.
+reads the chapter; this is where they find out whether they understood it.
+
+**Teach the section, not their project.** Do not read their repo, their sprint plan, or their
+product, and do not tie examples, questions, or tasks to what they are building. Use the
+section's own examples and small, self-contained scenarios you make up. The goal is that they
+understand the core idea well enough to apply it anywhere; tying it to one project narrows it.
+If the builder brings up their own project, answer briefly, then return to the general model.
 
 **Teach from first principles.** The goal is an accurate mental model, not syntax: the
 fundamental building blocks of the idea and how they combine, well enough that the builder can
@@ -59,9 +64,9 @@ Name the section in one line, then ask one question: how much time do they have 
 Offer these, and let them answer in their own words:
 
 - **Quick** (about 15 minutes): the core model and a two-question check.
-- **Standard** (about 30 minutes): the model worked on their product, and a three-question check.
-- **Deep** (an hour or more): everything, including a hands-on task in their repo and a
-  five-question check.
+- **Standard** (about 30 minutes): the model worked through examples, and a three-question check.
+- **Deep** (an hour or more): everything, including a practice exercise and a five-question
+  check.
 - **Open-ended**: deep, and you offer a stopping point after each step.
 
 Their answer sets the plan. Say in one line what this session will cover, and that they can
@@ -71,43 +76,26 @@ log.
 
 | Step | Quick | Standard | Deep / open-ended |
 |---|---|---|---|
-| 1. Read project and sprint | yes | yes | yes |
-| 2. Diagnose | one question | up to three | up to three |
-| 3. Teach the model | yes | yes | yes, plus a second predict question |
-| 4. Work it on their product | explain-back only | yes | yes |
-| 5. Hands-on task | no | offer it if time allows | yes |
-| 6. Check | two questions | three questions | five questions |
-| 7. Close and log | yes | yes | yes |
+| 1. Diagnose | one question | up to three | up to three |
+| 2. Teach the model | yes | yes | yes, plus a second predict question |
+| 3. Work it through | explain-back only | yes | yes |
+| 4. Practice exercise | no | offer it if time allows | yes |
+| 5. Check | two questions | three questions | five questions |
+| 6. Close and log | yes | yes | yes |
 
-### 1. Read their project and their sprint
-
-Before teaching, read what the builder is working on so every example can be theirs: `README.md`
-(role, what they are working on, who it is for), `CLAUDE.md`, and the parts of `product/` or
-other code the section touches. Read only; change nothing. If the README context is blank, ask in
-one question what they are building and who it is for.
-
-Then read the current sprint plan, the highest-numbered `sprints/sprint-N-plan.md` (including any
-dated `**Changes:**` notes): its goal, what it will produce, and which axis it targets. Work out
-how this section connects to that sprint and say so in one line before teaching, for example:
-"Your sprint is getting your first ten real users. This section on activation is about whether
-they stay." If the section does not connect to this sprint (a Launch section during an
-Architecture sprint), say that plainly in one line, teach it on their product in general, and
-note where it will matter later. Never force a connection that is not there. If there is no
-sprint plan, skip this and use the product.
-
-The section's axis comes from its chapter: 01 to 02 Agentic Workflow, 03 to 04 Discovery, 05 to
+The section's axis (for the log) comes from its chapter: 01 to 02 Agentic Workflow, 03 to 04 Discovery, 05 to
 06 Design, 07 to 09 Application Architecture, 10 AI Systems, 11 AI Systems for how models behave
 and Agentic Workflow for building AI into the product (use the section's own topic), 12 to 15
 Launch and Learn.
 
-### 2. Diagnose
+### 1. Diagnose
 
 Ask at most three short questions (one in a quick session) to find out what they already know about this section's idea.
 Make them questions that reveal understanding, not recall: "What do you think happens when...",
 "How would you explain X to a teammate?" If an answer shows they have a piece, skip teaching it.
 If they say they know none of it, start from the beginning without a quiz.
 
-### 3. Teach the one mental model, from first principles
+### 2. Teach the one mental model, from first principles
 
 Every section has one central model. Find it in the text (sections often state it as
 **The model:**). Teach it in this order:
@@ -134,17 +122,14 @@ same sentence: "Beyond the book: ...". If the section looks outdated or wrong (a
 interface or a feature has changed), say so plainly, say what you believe is current, and mark
 that as beyond the book.
 
-### 4. Work it on their product
+### 3. Work it through
 
-Apply the model to what they are building: their screens, their data, their users, their plan.
-Where the section connects to their sprint, set the examples in the sprint's actual work: the
-feature, the interviews, or the launch they committed to this sprint. The section still sets what
-is taught; the sprint sets where it is practiced.
-Point at real files and real decisions in their repo. Then:
+Apply the model to two or three concrete cases: the section's own examples first, then small
+scenarios you make up (a made-up app, team, or set of users, described in a sentence or two).
+Vary them so the builder sees what stays the same across cases. Then:
 
-- **Explain it back.** Ask them to explain the model in their own words, applied to their
-  product. Keep their answer word for word for the log.
-- **Predict what happens.** Pose a change to their product and ask what the model says will
+- **Explain it back.** Ask them to explain the model in their own words. Keep their answer word for word for the log.
+- **Predict what happens.** Change one thing in a scenario and ask what the model says will
   happen.
 
 **Name misconceptions directly.** When an answer shows a wrong model, say so: "That is a common
@@ -155,24 +140,16 @@ Be encouraging and honest. Say what was right in an answer and what was not. Nev
 answer right.
 
 **Stopping.** The builder can stop at any point. In an open-ended session, offer a stopping
-point at the end of each step. Wherever they stop, go to step 7 and log where they stopped.
+point at the end of each step. Wherever they stop, go to step 6 and log where they stopped.
 
-### 5. One hands-on task in their repo
+### 4. Practice exercise
 
-When the section allows it, give one small task that uses the model in their own repo, and where
-the section connects to the sprint, make it a small step on the sprint's real work: a
-`CLAUDE.md` rule, a spec, an empty state on one screen, a metric definition, an interview
-question, a test. They do the thinking; you may make the change they direct. Keep it a small learning exercise:
-it is not a way to get the sprint's deliverables done for them. Some sections
-(strategy, storytelling) have no code task; make it a short written artifact in the right folder
-instead, or skip this step and say why.
+Give one short exercise that uses the model on a fresh made-up scenario: sort a list of cases,
+find the broken piece in a short description, write a two-line rule, or sketch the steps in
+order. They do the work in the chat; you respond to what they produce. Keep it small. Do not
+create, change, or delete files in their repo for this.
 
-Never do anything destructive: no deleting files, no discarding changes, no rewriting history,
-no force pushes, no new dependencies without asking. Normal permission prompts apply. Show what
-changed. Whether to keep and commit the task's work is their call; it is not part of the
-learning log commit.
-
-### 6. Check
+### 5. Check
 
 Write fresh questions from this section in the course exam style (two, three, or five, by the
 plan from step 0): a short realistic
@@ -180,7 +157,7 @@ scenario (40 to 90 words), one question ("What is the best next step?", "What is
 cause?"), four options A to D, one best answer. Every option should be something a reasonable
 person might choose, and each wrong option should be the answer someone with a specific
 half-right model would pick. Prefer predict-the-outcome and find-the-broken-piece questions over
-definitions. Set at least one scenario in their product.
+definitions. Use general scenarios, never their own project.
 
 These are practice questions you wrote for this session. Never say or suggest they are exam
 questions.
@@ -190,7 +167,7 @@ explain why the best answer wins and why their choice (if different) loses, in t
 sentences. Then the next question. Keep the score, but present it as a guide to what to review,
 not a grade.
 
-### 7. Close and write the log
+### 6. Close and write the log
 
 Ask two last questions, one at a time:
 
@@ -212,7 +189,6 @@ use the shape below. Create `learning/` if it is missing.
 **Time:** <start> to <end> (<N> minutes)
 **Finished:** yes / stopped after <step name>
 **Session:** quick / standard / deep / open-ended
-**Sprint:** <N, from sprints/sprint-N-plan.md, or "none">
 **Axis:** <the section's axis>
 
 This log is a record of learning, not a score.
@@ -225,15 +201,6 @@ This log is a record of learning, not a score.
 
 - <the wrong model, in a phrase>: resolved / not yet resolved
 (or "None came up.")
-
-## How this connects to my sprint
-
-<one or two sentences: how this section bears on the sprint goal, or "Not connected to this
-sprint; matters later for <what>.">
-
-## Applied to my project
-
-<the one thing applied to their product, with the file path if a file changed>
 
 ## Check
 
@@ -274,5 +241,4 @@ No emoji. No em dashes.
   points at one building block. If a second hint does not land, offer an `/eli5` picture of that block.
 - If they quit early, still write and commit the log, with where they stopped.
 - Never write their words for them in the log.
-- Never edit the sprint plan. If the session changes how they think about their sprint, suggest
-  they update the plan with `/sprint-plan`, which records a dated change note.
+- Never read or tie the lesson to their repo, sprint plan, or product.

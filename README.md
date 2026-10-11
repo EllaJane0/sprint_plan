@@ -43,7 +43,7 @@ Everything someone would need to check your output. List each place on its own l
 | `gtm/` | Launch, channels, copy, experiments |
 | `metrics/` | What you measure and what it says |
 | `decisions/` | Numbered records of what you decided and why |
-| `learning/` | One log per `/learn` session: what you explained, what you applied, what you still wonder |
+| `learning/` | One log per `/learn` session: what you explained, what you missed, what you still wonder |
 
 Not everyone in this course writes software. An interview, a pricing model, a landing page
 draft, and a usability finding are all artifacts, and they get committed like anything else.
@@ -70,7 +70,7 @@ Each sprint:
 
 Every section of the [course book](https://byu-strategy.github.io/product-management/) ends with
 a line like `/learn https://byu-strategy.github.io/product-management/...#section`. Paste it into
-Claude Code for a tutoring session on that section, as short or as deep as you have time for, worked on your own product.
+Claude Code for a tutoring session on that section, as short or as deep as you have time for. It teaches the section's core idea on its own, apart from your project.
 It ends with a short check and commits a log to `learning/`.
 
 When an idea will not click in words, type `/eli5 <the idea>` (or say "explain it like I'm
