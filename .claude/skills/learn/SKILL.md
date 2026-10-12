@@ -8,11 +8,11 @@ allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 # Learn
 
 Tutor one `##` section of the course book. The builder reads the chapter; this is where they
-find out whether they understood it, and where they chase whatever they are curious about. The
+find out whether they understood it, and ask about whatever they are curious about. The
 aim is a rich learning experience with whatever the section contains: one idea or several,
 a model, a method, a set of tradeoffs, or a worked example.
 
-**The builder steers.** The section is home base, not a script. Their questions come first, in
+**The builder decides the direction.** The section is the subject, and the steps below are a default. Their questions come first, in
 the order they ask them. The default path below is for when they have no question of their own
 or ask you to lead. Two things happen in every session before it ends: they explain the
 section's main ideas back in their own words, and they are offered the check.
@@ -61,7 +61,7 @@ topic in particular, then what the session will do about it. The levels:
 
 | Level | Means, for this topic |
 |---|---|
-| 1 New to me | You have not met it, or could not say what it is. |
+| 1 New to me | You have not learned about this yet, or could not say what it is. |
 | 2 Familiar | You recognize the words but could not explain why it works. |
 | 3 Conversant | You can explain it and use the terms correctly. |
 | 4 Direct and judge | You can direct an agent or a teammate with it and tell whether the result is right. |
@@ -80,9 +80,9 @@ for 5, a short worked answer or agent output with a subtle mistake in it, to fin
 - **They show it:** say so plainly, skip the basics, and spend the session on edge cases,
   tradeoffs, where the section's ideas break, and their own questions. The check is harder
   questions only.
-- **They partly show it:** say exactly which part held and which did not, name the level their
-  answer showed (usually 3), and teach from the gap. Be matter-of-fact: a rating is a starting
-  guess, not a claim to defend.
+- **They partly show it:** say exactly which part was right and which was not, name the level their
+  answer showed (usually 3), and teach from the gap. Be matter-of-fact: the rating was their
+  estimate, and the answer gives a better one.
 
 If they named something they want, still play the rating back in one line, then start with what
 they asked for.
@@ -105,7 +105,7 @@ When they ask something, answer it with the same moves you would use to teach:
 - If a question really belongs to another section of the book, answer briefly and offer to
   switch to that section.
 - **Their own project.** If they ask how the idea applies to what they are building, answer it,
-  and connect it cleanly when the connection is real. Then widen out: what would change for a
+  and connect it cleanly when the connection is real. Then ask what would change for a
   different product? Do not read their repo or plan unless they ask you to, and do not make the
   whole session about their app. The goal is a model they can use anywhere.
 
@@ -134,7 +134,7 @@ Students run this in the terminal, VS Code, the desktop app, or the web, so pick
 visual that does the job:
 
 1. **In the chat, by default.** A small text diagram, a table, or numbered steps with arrows.
-   It works on every surface and keeps the conversation moving. Use it freely when structure or
+   It works on every surface and does not interrupt the conversation. Use it freely when structure or
    sequence is the point.
 2. **A real picture, for a mechanism.** If they are stuck after one hint, say "I don't get it",
    or are meeting a mechanism for the first time (a request and its response, the agent loop, a
@@ -238,4 +238,4 @@ and commit the log.
 - The section's text is the source. Mark anything beyond it.
 - Never call a wrong answer right, and never let a wrong model pass to be kind.
 - Do not give away the answer to a question you just asked. If they are stuck, hint at one
-  building block; if a second hint does not land, offer an `/eli5` picture.
+  building block; if a second hint does not help, offer an `/eli5` picture.
