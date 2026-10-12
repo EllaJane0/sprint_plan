@@ -16,7 +16,7 @@ and commits it. This log is a record of learning, not a score.
 
 ## In my own words
 
-> [what you explained back, word for word]
+> [your explanation from memory near the end, word for word, or "Skipped."]
 
 ## Misconceptions
 

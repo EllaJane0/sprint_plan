@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text, asks how well they know it (1 to 5) and plays that back, has a 4 or 5 prove it, teaches whatever the section holds from first principles wherever their questions lead, has them explain it back, offers a short check, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
+description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text, asks how well they know it (1 to 5) and plays that back, has a 4 or 5 prove it, teaches whatever the section holds from first principles wherever their questions lead, checks understanding with new cases instead of asking them to repeat it, offers a short check, invites an explanation from memory near the end, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
 argument-hint: "[section link from the course book]"
 allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 ---
@@ -14,8 +14,7 @@ a model, a method, a set of tradeoffs, or a worked example.
 
 **The builder decides the direction.** The section is the subject, and the steps below are a default. Their questions come first, in
 the order they ask them. The default path below is for when they have no question of their own
-or ask you to lead. Two things happen in every session before it ends: they explain the
-section's main ideas back in their own words, and they are offered the check.
+or ask you to lead. The one fixed step is offering the check before the session ends.
 
 **Teach from first principles.** The goal is accurate mental models, not syntax: the building
 blocks of each idea and how they combine, well enough that the builder can predict what happens,
@@ -120,11 +119,12 @@ When they want you to lead, or their questions run out, cover what is left of th
 2. **Build it up.** For each main idea in the section, the building blocks in plain words, then
    how they combine and what behavior that produces. Use the section's own examples, then small
    made-up ones. If the section has several ideas, show how they connect.
-3. **Explain it back.** Ask them to explain the section's main ideas in their own words. Keep the
-   answer word for word for the log. If it is still shaky, change one detail in a scenario and
-   ask what happens now.
+3. **Apply it to something new.** Right after you explain, do not ask them to explain it back:
+   your explanation is still on the screen, so they can copy it, and that shows nothing. Instead
+   change one detail in a scenario, or give a new case, and ask what happens now and why. Their
+   answer has to use the idea, which copying cannot do.
 
-"Quick" means one predict, a short explanation, the explain-back, and a two-question check.
+"Quick" means one predict, a short explanation, one new case, and a two-question check.
 "Go deeper" adds a second example and one short practice exercise in the chat (sort some cases,
 find the broken piece, write a two-line rule), and five check questions.
 
@@ -147,20 +147,32 @@ Note each picture in the log, with its link or path.
 
 ### Check
 
-When they have explained it back, offer the check: three questions by default, two if
+When they have worked through the main ideas, offer the check: three questions by default, two if
 they said quick, five if they went deeper. They can decline.
 
-Each question: a realistic scenario of 40 to 90 words, one question ("What is the best next
-step?", "What is the most likely cause?"), options A to D, one best answer. Each wrong option is
-what someone with a specific half-right understanding would pick. Spread the questions across
-the section's ideas. Prefer predict-the-outcome and
-find-the-broken-piece over definitions. Use general scenarios, not their project. These are
-practice questions you wrote; never suggest they are exam questions.
+**Practice items come first.** If the fetch printed PRACTICE ITEMS, use those before writing
+your own. They are the course's practice form (Version A): questions written to match the
+midterm's ideas and formats, in different situations. Ask each as written. For an item with a
+`case_id`, show the case first; for an item with an `emi_list_id`, show its option list. Keep
+the key and rationale to yourself until they answer. You may say these are practice questions
+in the midterm's format; never say or suggest they are midterm questions.
+
+**Then write your own** if more are needed: a realistic scenario of 40 to 90 words, one question
+("What is the best next step?", "What is the most likely cause?"), options A to D, one best
+answer. Each wrong option is what someone with a specific half-right understanding would pick.
+Spread the questions across the section's ideas. Prefer predict-the-outcome and
+find-the-broken-piece over definitions. Use general scenarios, not their project.
 
 One at a time. After they answer, say whether it was right and why the best answer wins over
 theirs, in two to four sentences. Treat the score as a guide to what to review, not a grade.
 
 ### Close and write the log
+
+**Explain it from memory, if they want to.** After the check, when the explanations are no
+longer the most recent thing on the screen, you can offer one retrieval question: "Before we
+wrap up, without scrolling up: how would you explain <the main idea> to a teammate?" Offer it;
+do not require it. If they answer, keep it word for word for the log, and correct anything wrong
+in a sentence or two. If they skip it, write "Skipped." in the log.
 
 Ask in one message: "Where are you now on this section, 1 to 5, same scale as at the start?
 And is there one thing you're still wondering about? (Optional.)" Show the scale again:
@@ -189,7 +201,7 @@ This log is a record of learning, not a score.
 
 ## In my own words
 
-> <what they explained back, word for word>
+> <their explanation from memory, word for word, or "Skipped.">
 
 ## Misconceptions
 
@@ -198,7 +210,7 @@ This log is a record of learning, not a score.
 
 ## Check
 
-<n>/<total>. Missed: <the idea behind each miss>, or "none".
+<n>/<total>, of which <k> from the practice form. Missed: <the idea behind each miss>, or "none".
 (or "Not taken.")
 
 ## Confidence

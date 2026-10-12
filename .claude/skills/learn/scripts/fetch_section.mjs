@@ -239,6 +239,34 @@ async function main() {
   console.log("----- SECTION TEXT START -----");
   console.log(text);
   console.log("----- SECTION TEXT END -----");
+  await printPractice(parsed.stem, h.id);
+}
+
+// ---- Practice items for this section ------------------------------------------------------
+// practice/version-a.json in the book repo is a public practice form, parallel to the midterm.
+// Each item lists the book sections it draws on as "<chapter>.qmd#<anchor>". Print the items
+// that cite this section, with any case they belong to. A missing file is not an error.
+
+async function printPractice(stem, id) {
+  let r;
+  try { r = await get(RAW + "practice/version-a.json"); } catch { return; }
+  if (r.status !== 200) return;
+  let bank;
+  try { bank = JSON.parse(r.body); } catch { return; }
+  const key = `${stem}.qmd#${id}`.toLowerCase();
+  const items = (bank.items || []).filter((it) =>
+    (it.sections || []).some((s) => s.toLowerCase() === key));
+  if (!items.length) return;
+  const caseIds = new Set(items.map((it) => it.case_id).filter(Boolean));
+  const listIds = new Set(items.map((it) => it.emi_list_id).filter(Boolean));
+  const out = {
+    cases: (bank.cases || []).filter((c) => caseIds.has(c.id)),
+    option_lists: (bank.option_lists || []).filter((l) => listIds.has(l.id)),
+    items,
+  };
+  console.log(`----- PRACTICE ITEMS START (${items.length}, Version A) -----`);
+  console.log(JSON.stringify(out, null, 1));
+  console.log("----- PRACTICE ITEMS END -----");
 }
 
 main().catch((e) => {
