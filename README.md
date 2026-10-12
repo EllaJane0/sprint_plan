@@ -68,10 +68,11 @@ Each sprint:
 
 ## Learning a section
 
-Every section of the [course book](https://byu-strategy.github.io/product-management/) ends with
-a line like `/learn https://byu-strategy.github.io/product-management/...#section`. Paste it into
-Claude Code for a tutoring session on that section, as short or as deep as you have time for. It teaches the section's core idea on its own, apart from your project.
-It ends with a short check and commits a log to `learning/`.
+Sections of the [course book](https://byu-strategy.github.io/product-management/) that teach a
+model have a **Learn in Claude** button beside their heading. It copies a prompt; paste it into
+Claude Code for a tutoring session on that section. Bring your own questions, or let Claude lead,
+and say "quick" or "go deeper" whenever you like. It ends with a short check and commits a log to
+`learning/`.
 
 When an idea will not click in words, type `/eli5 <the idea>` (or say "explain it like I'm
 five"). Claude draws a one-page picture of it with very few words, saves it under

@@ -240,6 +240,7 @@ def cmd_learning(since, repo):
             "axis": field(text, "Axis"),
             "time": field(text, "Time"),
             "confidence": field(text, "Confidence"),
+            "asked": field(text, "What I asked about"),
             "question": field(text, "Still wondering"),
         })
     print(f"LEARNING SESSIONS: {len(logs)}")
@@ -251,7 +252,7 @@ def cmd_learning(since, repo):
         print("  by axis: " + ", ".join(f"{k} {v}" for k, v in sorted(axes.items(), key=lambda x: -x[1])))
     for g in logs:
         print(f"\n  {g['day']}  {g['section']}  ({g['file']})")
-        for k in ("time", "finished", "axis", "confidence", "question"):
+        for k in ("time", "finished", "axis", "asked", "confidence", "question"):
             if g[k]:
                 print(f"    {k}: {g[k][:300]}")
 

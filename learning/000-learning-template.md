@@ -6,9 +6,12 @@ and commits it. This log is a record of learning, not a score.
 **Section:** [[section title]]([page URL]#[anchor])
 **Date:** YYYY-MM-DD
 **Time:** [start] to [end] ([N] minutes)
-**Finished:** [yes, or "stopped after" the step you reached]
-**Session:** [quick, standard, deep, or open-ended]
+**Finished:** [yes, or "stopped early"]
 **Axis:** [the section's axis]
+
+## What I asked about
+
+- [each question or direction you took, in a short phrase, or "Followed the default path."]
 
 ## In my own words
 
@@ -20,7 +23,7 @@ and commits it. This log is a record of learning, not a score.
 
 ## Check
 
-[n]/[total]. Missed: [the idea behind each miss, or "none"]
+[n]/[total]. Missed: [the idea behind each miss, or "none"], or "Not taken."
 
 ## Confidence
 
@@ -28,4 +31,4 @@ and commits it. This log is a record of learning, not a score.
 
 ## Still wondering
 
-[one question you still have, word for word]
+[one question you still have, word for word, or "Nothing."]
