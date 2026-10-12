@@ -8,6 +8,7 @@ and commits it. This log is a record of learning, not a score.
 **Time:** [start] to [end] ([N] minutes)
 **Finished:** [yes, or "stopped early"]
 **Axis:** [the section's axis]
+**Starting point:** [1 to 5, your rating at the start]
 
 ## What I asked about
 
@@ -27,7 +28,11 @@ and commits it. This log is a record of learning, not a score.
 
 ## Confidence
 
-[1 to 5. 1: I could not explain it yet. 3: I could explain it with notes. 5: I could teach it.]
+[1 to 5, your rating at the end. 1 New to me, 2 Familiar, 3 Conversant, 4 Direct and judge, 5 Teach it]
+
+## Pictures
+
+- [what it showed]: [Artifact link or file path], or "None."
 
 ## Still wondering
 

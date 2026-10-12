@@ -1,6 +1,6 @@
 ---
 name: eli5
-description: Explain one idea like the builder is five, as a one-page HTML picture explainer with big shapes and very few words, saved under learning/eli5/ and opened in the browser. Use when the user types /eli5 <topic>, says "explain it like I'm five", "explain that simpler", "draw me a picture of how X works", or when the /learn skill offers a simpler picture of a building block.
+description: Explain one idea like the builder is five, as a one-page picture explainer with big shapes and very few words, published as an Artifact link when possible (saved under learning/eli5/ either way). Use when the user types /eli5 <topic>, says "explain it like I'm five", "explain that simpler", "draw me a picture of how X works", or when the /learn skill offers a simpler picture of a building block.
 argument-hint: "[the idea to explain, e.g. how a pull request works]"
 ---
 
@@ -18,9 +18,9 @@ If no idea was given, ask for one in a single question and wait.
 1. **Find the one idea.** Write it as one plain sentence ("A pull request is a proposed change
    that waits for checks and a review before it joins main"). If the request holds two ideas,
    pick the one the builder needs now and say so.
-2. **Make it theirs.** If you are inside the builder's repo, read `README.md` and the newest
-   file in `sprints/` and use their product as the example (their app, their users, their data).
-   Otherwise use one everyday example.
+2. **Pick the example.** When `/learn` calls this, use the example already in that
+   conversation. Otherwise use one everyday example, or the builder's own product if they asked
+   about it.
 3. **Plan three to six panels,** each one small step. Each panel is a picture made of simple
    shapes, with a label of one to four words. Read left to right or top to bottom. Show the
    mechanism, the actual parts and what moves between them, never a box labeled with the
@@ -36,8 +36,11 @@ If no idea was given, ask for one in a single question and wait.
    - At the bottom, two lines in small type: **Where this picture is simplified:** one
      sentence naming what the picture leaves out. **Say it back:** one question the builder
      answers in their own words.
-5. **Open it.** On macOS run `open <file>`; on Windows (Git Bash) run `start <file>`. If
-   neither works, print the file path.
+5. **Show it.** If you have the Artifact tool (Claude Code's built-in way to publish a page),
+   publish the file with it and give the builder the link. It is private to their account and
+   opens the same way from the terminal, VS Code, the desktop app, or the web. If you do not
+   have that tool, or publishing fails: on macOS run `open <file>`, on Windows (Git Bash) run
+   `start <file>`, and always print the file's full path so they can open it themselves.
 6. **Check understanding.** Ask the "Say it back" question in the chat and wait. If the answer
    shows a wrong model, name it plainly and point at the panel that shows the right one.
 

@@ -48,11 +48,20 @@ idea, some hold several, some hold a method or a set of tradeoffs.
 
 ### Open
 
-Name the section in one line, then ask one question: what do they want from it? Something that
-confused them, something to go deeper on, or should you start with the core idea? Mention that
-they can say "quick" or "go deeper" at any time, and stop whenever they like.
+Name the section in one line, then ask where they are starting from, on the scale from their
+builder survey, with an optional open invitation in the same message:
 
-Note the start time (the Fetched line, or `date`) for the log.
+> Where are you starting from on this section, 1 to 5?
+> 1 New to me · 2 Familiar · 3 Conversant · 4 Direct and judge · 5 Teach it
+> And if something in it confused you, or you want to go deeper somewhere, tell me.
+
+The rating sets where you start: 1 or 2, from the beginning; 3, from a predict question; 4 or 5,
+from the hardest part of the section or straight to their question. Self-ratings are rough, so
+let the first predict question confirm it. If it shows a gap, start lower and say why in one
+sentence. If they named something they want, start there.
+
+Mention once that they can say "quick" or "go deeper" at any time, and stop whenever they like.
+Note the start time (the Fetched line, or `date`) and their rating for the log.
 
 ### Follow their questions
 
@@ -91,11 +100,22 @@ When they want you to lead, or their questions run out, cover what is left of th
 "Go deeper" adds a second example and one short practice exercise in the chat (sort some cases,
 find the broken piece, write a two-line rule), and five check questions.
 
-**Use a picture when words stall.** If they are stuck after one hint, say "I don't get it", or
-are meeting a mechanism for the first time (a request and its response, the agent loop, a
-branch and a merge), offer: "Want a picture of this? I can draw it in your browser." On a yes,
-run `/eli5 <the one block, in plain words>`, then return to where you were. At most two or three
-per session.
+### Make it visual
+
+Students run this in the terminal, VS Code, the desktop app, or the web, so pick the lightest
+visual that does the job:
+
+1. **In the chat, by default.** A small text diagram, a table, or numbered steps with arrows.
+   It works on every surface and keeps the conversation moving. Use it freely when structure or
+   sequence is the point.
+2. **A real picture, for a mechanism.** If they are stuck after one hint, say "I don't get it",
+   or are meeting a mechanism for the first time (a request and its response, the agent loop, a
+   branch and a merge), offer: "Want a picture of this?" On a yes, run
+   `/eli5 <the one block, in plain words>`. It publishes the picture as an Artifact (a
+   claude.ai link that opens the same way on every surface) when it can, and saves a local
+   file otherwise. Then return to where you were. At most two or three per session.
+
+Note each picture in the log, with its link or path.
 
 ### Check
 
@@ -114,9 +134,9 @@ theirs, in two to four sentences. Treat the score as a guide to what to review, 
 
 ### Close and write the log
 
-Ask in one message: "How confident are you with this section now, 1 to 5? And is there one
-thing you're still wondering about? (Optional.)" (1: could not explain it yet. 3: could explain
-it with notes. 5: could teach it.)
+Ask in one message: "Where are you now on this section, 1 to 5, same scale as at the start?
+And is there one thing you're still wondering about? (Optional.)" Show the scale again:
+1 New to me · 2 Familiar · 3 Conversant · 4 Direct and judge · 5 Teach it.
 
 Get the end time from `date`. Write `learning/YYYY-MM-DD-<slug>.md` (the Slug from the fetch;
 add `-2`, `-3` if it exists). Follow `learning/000-learning-template.md` if the repo has it,
@@ -130,6 +150,7 @@ otherwise this shape. Create `learning/` if missing.
 **Time:** <start> to <end> (<N> minutes)
 **Finished:** yes / stopped early
 **Axis:** <the section's axis>
+**Starting point:** <1 to 5, their rating at the start>
 
 This log is a record of learning, not a score.
 
@@ -154,7 +175,12 @@ This log is a record of learning, not a score.
 
 ## Confidence
 
-<1 to 5>
+<1 to 5, their rating at the end>
+
+## Pictures
+
+- <what it showed>: <Artifact link or file path>
+(or "None.")
 
 ## Still wondering
 

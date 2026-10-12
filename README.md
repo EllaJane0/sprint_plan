@@ -75,9 +75,9 @@ and say "quick" or "go deeper" whenever you like. It ends with a short check and
 `learning/`.
 
 When an idea will not click in words, type `/eli5 <the idea>` (or say "explain it like I'm
-five"). Claude draws a one-page picture of it with very few words, saves it under
-`learning/eli5/`, and opens it in your browser. `/learn` offers this on its own when you get
-stuck.
+five"). Claude draws a one-page picture of it with very few words and gives you a link to open
+it (or, if it cannot make a link, saves it under `learning/eli5/` and tells you where). `/learn`
+offers this on its own when you get stuck.
 
 ### Get /learn in an existing repo
 
