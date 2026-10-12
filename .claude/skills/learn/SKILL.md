@@ -150,6 +150,16 @@ Note each picture in the log, with its link or path.
 When they have worked through the main ideas, offer the check: three questions by default, two if
 they said quick, five if they went deeper. They can decline.
 
+The course exams use three question types, and the check uses the same ones, so a three-question
+check is one of each:
+
+- **Know it:** a fact or a term. What something is or what it is for. Short, no story.
+- **Use it:** a short situation. Which tool, step, or method fits.
+- **Predict it:** what happens, or what went wrong, and why.
+
+Quick drops Know it. Going deeper adds a second Use it and a second Predict it. Practice items
+carry their `type`.
+
 **Practice items come first.** If the fetch printed PRACTICE ITEMS, use those before writing
 your own. They are the course's practice form (Version A): questions written to match the
 midterm's ideas and formats, in different situations. Ask each as written. For an item with a
@@ -157,11 +167,11 @@ midterm's ideas and formats, in different situations. Ask each as written. For a
 the key and rationale to yourself until they answer. You may say these are practice questions
 in the midterm's format; never say or suggest they are midterm questions.
 
-**Then write your own** if more are needed: a realistic scenario of 40 to 90 words, one question
-("What is the best next step?", "What is the most likely cause?"), options A to D, one best
-answer. Each wrong option is what someone with a specific half-right understanding would pick.
-Spread the questions across the section's ideas. Prefer predict-the-outcome and
-find-the-broken-piece over definitions. Use general scenarios, not their project.
+**Then write your own** if more are needed, in the exam's plain style: Know it questions in
+10 to 25 words, Use it and Predict it in 20 to 60, options A to D as short phrases, one best
+answer. No trick wording. Each wrong option is what someone with a specific half-right
+understanding would pick. Spread the questions across the section's ideas. Use general
+scenarios, not their project.
 
 One at a time. After they answer, say whether it was right and why the best answer wins over
 theirs, in two to four sentences. Treat the score as a guide to what to review, not a grade.
@@ -210,7 +220,8 @@ This log is a record of learning, not a score.
 
 ## Check
 
-<n>/<total>, of which <k> from the practice form. Missed: <the idea behind each miss>, or "none".
+<n>/<total>, of which <k> from the practice form. Know it <n/n>, Use it <n/n>, Predict it <n/n>.
+Missed: <the idea behind each miss>, or "none".
 (or "Not taken.")
 
 ## Confidence

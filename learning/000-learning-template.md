@@ -24,7 +24,7 @@ and commits it. This log is a record of learning, not a score.
 
 ## Check
 
-[n]/[total]. Missed: [the idea behind each miss, or "none"], or "Not taken."
+[n]/[total]. Know it [n/n], Use it [n/n], Predict it [n/n]. Missed: [the idea behind each miss, or "none"], or "Not taken."
 
 ## Confidence
 
