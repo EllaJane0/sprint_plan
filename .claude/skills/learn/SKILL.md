@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text, asks what they want from it, teaches the section's mental model from first principles wherever their questions lead, has them explain it back, offers a short check, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
+description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text, asks what they want from it, teaches whatever the section holds from first principles wherever their questions lead, has them explain it back, offers a short check, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
 argument-hint: "[section link from the course book]"
 allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 ---
@@ -8,15 +8,17 @@ allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 # Learn
 
 Tutor one `##` section of the course book. The builder reads the chapter; this is where they
-find out whether they understood it, and where they chase whatever they are curious about.
+find out whether they understood it, and where they chase whatever they are curious about. The
+aim is a rich learning experience with whatever the section contains: one idea or several,
+a model, a method, a set of tradeoffs, or a worked example.
 
 **The builder steers.** The section is home base, not a script. Their questions come first, in
 the order they ask them. The default path below is for when they have no question of their own
-or ask you to lead. Two things happen in every session before it ends: they explain the model
-back once, and they are offered the check.
+or ask you to lead. Two things happen in every session before it ends: they explain the
+section's main ideas back in their own words, and they are offered the check.
 
-**Teach from first principles.** The goal is an accurate mental model, not syntax: the building
-blocks of the idea and how they combine, well enough that the builder can predict what happens,
+**Teach from first principles.** The goal is accurate mental models, not syntax: the building
+blocks of each idea and how they combine, well enough that the builder can predict what happens,
 explain why, and catch an agent's mistake. Before you state a consequence, ask them to work it
 out. Use an analogy only when it is accurate, and say where it breaks. Show code or commands
 only when reading them builds the model.
@@ -38,8 +40,9 @@ source on GitHub when this skill started. Its first line is a status.
   (their link's page name with `.html` swapped for `.qmd`) and take the `##` section whose
   heading matches the anchor. If that fails too, stop. Never teach from memory.
 
-The section's model is usually stated as **The model:**. If there is none, find the section's
-central idea and teach that.
+Many sections state a model as **The model:**. Treat that as a strong hint about what matters,
+not the limit of what to teach. Read the whole section and work out what is in it: some hold one
+idea, some hold several, some hold a method or a set of tradeoffs.
 
 ## The session
 
@@ -55,7 +58,7 @@ Note the start time (the Fetched line, or `date`) for the log.
 
 When they ask something, answer it with the same moves you would use to teach:
 
-- Find which building block of the model the question touches, and work from there.
+- Find which building block the question touches, and work from there.
 - Ask them to predict before you explain, when the question allows it. Not every question needs
   a quiz back: a factual question gets a plain answer.
 - Name a wrong model directly: "That is a common mix-up. X is not Y; here is why." Then ask one
@@ -75,13 +78,14 @@ Keep a quiet note of what they asked about, for the log.
 
 When they want you to lead, or their questions run out, cover what is left of this:
 
-1. **Predict.** A small situation the model explains; ask what happens. Their answer shows what
-   they already know, so skip anything they clearly have.
-2. **Build the model.** The few building blocks in plain words, then how they combine and what
-   behavior that produces. Use the section's own examples, then small made-up ones.
-3. **Explain it back.** Ask them to explain the model in their own words. Keep the answer word
-   for word for the log. If it is still shaky, change one detail in a scenario and ask what
-   happens now.
+1. **Predict.** A small situation the section's ideas explain; ask what happens. Their answer
+   shows what they already know, so skip anything they clearly have.
+2. **Build it up.** For each main idea in the section, the building blocks in plain words, then
+   how they combine and what behavior that produces. Use the section's own examples, then small
+   made-up ones. If the section has several ideas, show how they connect.
+3. **Explain it back.** Ask them to explain the section's main ideas in their own words. Keep the
+   answer word for word for the log. If it is still shaky, change one detail in a scenario and
+   ask what happens now.
 
 "Quick" means one predict, a short explanation, the explain-back, and a two-question check.
 "Go deeper" adds a second example and one short practice exercise in the chat (sort some cases,
@@ -95,12 +99,13 @@ per session.
 
 ### Check
 
-When the model has been explained back, offer the check: three questions by default, two if
+When they have explained it back, offer the check: three questions by default, two if
 they said quick, five if they went deeper. They can decline.
 
 Each question: a realistic scenario of 40 to 90 words, one question ("What is the best next
 step?", "What is the most likely cause?"), options A to D, one best answer. Each wrong option is
-what someone with a specific half-right model would pick. Prefer predict-the-outcome and
+what someone with a specific half-right understanding would pick. Spread the questions across
+the section's ideas. Prefer predict-the-outcome and
 find-the-broken-piece over definitions. Use general scenarios, not their project. These are
 practice questions you wrote; never suggest they are exam questions.
 
