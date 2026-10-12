@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text, asks what they want from it, teaches whatever the section holds from first principles wherever their questions lead, has them explain it back, offers a short check, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
+description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text, asks how well they know it (1 to 5) and plays that back, has a 4 or 5 prove it, teaches whatever the section holds from first principles wherever their questions lead, has them explain it back, offers a short check, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
 argument-hint: "[section link from the course book]"
 allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 ---
@@ -48,20 +48,48 @@ idea, some hold several, some hold a method or a set of tradeoffs.
 
 ### Open
 
-Name the section in one line, then ask where they are starting from, on the scale from their
-builder survey, with an optional open invitation in the same message:
+Ask how well they know the section's topic, named in plain words (not the heading if the
+heading is clever), with the scale from their builder survey and an optional open invitation in
+the same message:
 
-> Where are you starting from on this section, 1 to 5?
+> How well do you know <the topic, in plain words>, 1 to 5?
 > 1 New to me · 2 Familiar · 3 Conversant · 4 Direct and judge · 5 Teach it
 > And if something in it confused you, or you want to go deeper somewhere, tell me.
 
-The rating sets where you start: 1 or 2, from the beginning; 3, from a predict question; 4 or 5,
-from the hardest part of the section or straight to their question. Self-ratings are rough, so
-let the first predict question confirm it. If it shows a gap, start lower and say why in one
-sentence. If they named something they want, start there.
+**Play their rating back.** In two or three sentences, say what that level means for this
+topic in particular, then what the session will do about it. The levels:
+
+| Level | Means, for this topic |
+|---|---|
+| 1 New to me | You have not met it, or could not say what it is. |
+| 2 Familiar | You recognize the words but could not explain why it works. |
+| 3 Conversant | You can explain it and use the terms correctly. |
+| 4 Direct and judge | You can direct an agent or a teammate with it and tell whether the result is right. |
+| 5 Teach it | You could teach it, and catch someone else's mistake in it. |
+
+Example: "A 2 on flows means the words 'flow' and 'happy path' are familiar, but you could not
+yet say why you map the flow before drawing screens. So we'll build that up from the start."
+
+**1 to 3: teach.** 1 or 2 starts at the beginning. 3 starts with a predict question, and skips
+whatever their answer shows they already have.
+
+**4 or 5: prove it first.** The session is different. Before teaching anything, give one hard
+question at that level, in the chat, open-ended rather than multiple choice: for 4, a short
+realistic case where they must direct the next step and say how they would judge the result;
+for 5, a short worked answer or agent output with a subtle mistake in it, to find and explain.
+- **They show it:** say so plainly, skip the basics, and spend the session on edge cases,
+  tradeoffs, where the section's ideas break, and their own questions. The check is harder
+  questions only.
+- **They partly show it:** say exactly which part held and which did not, name the level their
+  answer showed (usually 3), and teach from the gap. Be matter-of-fact: a rating is a starting
+  guess, not a claim to defend.
+
+If they named something they want, still play the rating back in one line, then start with what
+they asked for.
 
 Mention once that they can say "quick" or "go deeper" at any time, and stop whenever they like.
-Note the start time (the Fetched line, or `date`) and their rating for the log.
+Note the start time (the Fetched line, or `date`), their rating, and the level their first
+answers showed, for the log.
 
 ### Follow their questions
 
@@ -150,7 +178,7 @@ otherwise this shape. Create `learning/` if missing.
 **Time:** <start> to <end> (<N> minutes)
 **Finished:** yes / stopped early
 **Axis:** <the section's axis>
-**Starting point:** <1 to 5, their rating at the start>
+**Starting point:** <1 to 5, their rating at the start> (shown: <the level their first answers showed>)
 
 This log is a record of learning, not a score.
 
