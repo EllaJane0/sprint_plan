@@ -5,7 +5,7 @@ Reads only what it is told to read. --list reads each transcript's recorded work
 directory and nothing else; message content is opened solely for the projects named
 with --projects. Nothing is sent anywhere.
 """
-import argparse, json, os, sys, datetime as dt
+import argparse, json, os, re, sys, datetime as dt
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -167,6 +167,74 @@ def tool_uses(path, tool="claude"):
                     yield b.get("name", "?")
 
 
+COURSE_SKILLS = {"sprint-plan", "sprint-review", "learn", "eli5"}
+
+
+def builder_tools(path, tool="claude"):
+    """Which Claude Code building blocks a session used: skills, slash commands, hooks, subagents,
+    MCP servers, plan mode, permission modes, worktrees, and the memory and instruction files it
+    loaded or wrote. Counts and names only; never prompt or file content. Codex logs carry tool
+    names only, so they add nothing here."""
+    out = {k: Counter() for k in ("skills", "commands", "hooks", "hooks_blocked", "subagents", "mcp",
+                                  "modes", "plan", "worktrees", "instructions_loaded", "memory_written")}
+    if tool == "codex":
+        return out
+    try:
+        fh = open(path, "r", errors="replace")
+    except OSError:
+        return out
+    with fh:
+        for line in fh:
+            try:
+                d = json.loads(line)
+            except Exception:
+                continue
+            t = d.get("type")
+            if t == "user":
+                if d.get("permissionMode"):
+                    out["modes"][d["permissionMode"]] += 1
+                c = (d.get("message") or {}).get("content")
+                if isinstance(c, str):
+                    m = re.search(r"<command-name>/?([^<]+)</command-name>", c)
+                    if m:
+                        out["commands"][m.group(1).strip()] += 1
+                elif isinstance(c, list):
+                    for b in c:
+                        if isinstance(b, dict) and b.get("type") == "tool_result" and "hook error" in str(b.get("content", "")):
+                            ev = re.search(r"(\w+(?::\w+)?) hook error", str(b.get("content", "")))
+                            out["hooks_blocked"][ev.group(1) if ev else "hook"] += 1
+            elif t == "attachment":
+                a = d.get("attachment") or {}
+                if a.get("type") == "hook_success":
+                    out["hooks"][a.get("hookName") or a.get("hookEvent") or "hook"] += 1
+                elif a.get("type") == "invoked_skills":
+                    for sk in a.get("skills") or []:
+                        out["skills"][sk.get("name", "?")] += 1
+                elif a.get("type") == "instructions":
+                    for f in a.get("files") or []:
+                        out["instructions_loaded"][f"{f.get('type', '?')}: {Path(f.get('path', '?')).name}"] += 1
+            elif t == "assistant":
+                for b in (d.get("message") or {}).get("content") or []:
+                    if not (isinstance(b, dict) and b.get("type") == "tool_use"):
+                        continue
+                    name, inp = b.get("name", ""), b.get("input") or {}
+                    if name == "Skill":
+                        out["skills"][inp.get("skill", "?")] += 1
+                    elif name in ("Agent", "Task"):
+                        out["subagents"][inp.get("subagent_type") or "general-purpose"] += 1
+                    elif name.startswith("mcp__"):
+                        out["mcp"][name.split("__")[1]] += 1
+                    elif name in ("EnterPlanMode", "ExitPlanMode"):
+                        out["plan"][name] += 1
+                    elif name in ("EnterWorktree", "ExitWorktree"):
+                        out["worktrees"][name] += 1
+                    elif name in ("Write", "Edit", "MultiEdit"):
+                        fp = str(inp.get("file_path", ""))
+                        if "/memory/" in fp or fp.endswith(("CLAUDE.md", "AGENTS.md", "MEMORY.md")):
+                            out["memory_written"][Path(fp).name] += 1
+    return out
+
+
 def cmd_analyze(since, wanted):
     want = {w.rstrip("/") for w in wanted}
     picked = [(tool, f) for tool, cwd, f, _m in sessions(since)
@@ -176,12 +244,15 @@ def cmd_analyze(since, wanted):
         return
 
     by_day, prompts, tools = Counter(), [], Counter()
+    bt = {}
     for tool, f in picked:
         for ts, text in user_turns(f, tool):
             if ts:
                 by_day[ts[:10]] += 1
             prompts.append((ts, text))
         tools.update(tool_uses(f, tool))
+        for k, v in builder_tools(f, tool).items():
+            bt.setdefault(k, Counter()).update(v)
 
     by_tool = Counter(tool for tool, _ in picked)
     print(f"SESSIONS: {len(picked)} ({', '.join(f'{k} {v}' for k, v in sorted(by_tool.items()))})")
@@ -195,6 +266,25 @@ def cmd_analyze(since, wanted):
     print("\nTOOL USE")
     for name, n in tools.most_common(12):
         print(f"  {n:>5}  {name}")
+
+    def show(label, c, note=""):
+        items = ", ".join(f"{k} ({v})" for k, v in c.most_common(10))
+        print(f"  {label:<22} {items or 'none'}{note}")
+    own = Counter({k: v for k, v in bt["skills"].items() if k not in COURSE_SKILLS})
+    course = Counter({k: v for k, v in bt["skills"].items() if k in COURSE_SKILLS})
+    print("\nBUILDER TOOLS USED (counts across the confirmed sessions)")
+    show("Skills, your own", own)
+    show("Skills, course", course)
+    show("Slash commands", bt["commands"])
+    show("Hooks that ran", bt["hooks"])
+    show("Hooks that blocked", bt["hooks_blocked"])
+    show("Subagents", bt["subagents"])
+    show("MCP servers", bt["mcp"])
+    show("Plan mode", bt["plan"])
+    show("Permission modes", bt["modes"], "  (turns in each mode)")
+    show("Worktrees", bt["worktrees"])
+    show("Instructions loaded", bt["instructions_loaded"], "  (times each file was loaded)")
+    show("Memory written", bt["memory_written"], "  (edits to memory or instruction files)")
 
     print("\nPROMPTS (chronological, truncated)")
     for ts, text in sorted(prompts, key=lambda x: x[0]):
