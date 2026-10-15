@@ -193,7 +193,7 @@ def builder_tools(path, tool="claude"):
     loaded or wrote. Counts and names only; never prompt or file content. Codex logs carry tool
     names only, so they add nothing here."""
     out = {k: Counter() for k in ("skills", "commands", "hooks", "hooks_blocked", "subagents", "mcp",
-                                  "cli", "api_calls", "plugins", "modes", "plan", "worktrees",
+                                  "cli", "api_calls", "plugins", "messages", "modes", "plan", "worktrees",
                                   "instructions_loaded", "memory_written")}
     if tool == "codex":
         return out
@@ -248,6 +248,16 @@ def builder_tools(path, tool="claude"):
                         out["subagents"][inp.get("subagent_type") or "general-purpose"] += 1
                     elif name.startswith("mcp__"):
                         out["mcp"][name.split("__")[1]] += 1
+                    elif name == "SendMessage":
+                        to = str(inp.get("to") or "")
+                        if re.fullmatch(r"a[0-9a-f]{12,}", to):
+                            out["messages"]["a subagent"] += 1
+                        elif to.startswith(("uds:", "pipe:")) or not to:
+                            out["messages"]["a session on this computer"] += 1
+                        else:
+                            out["messages"][f"session {to}"] += 1
+                    elif name == "ListAgents":
+                        out["messages"]["listed reachable sessions"] += 1
                     elif name in ("EnterPlanMode", "ExitPlanMode"):
                         out["plan"][name] += 1
                     elif name in ("EnterWorktree", "ExitWorktree"):
@@ -311,6 +321,7 @@ def cmd_analyze(since, wanted):
     show("Service CLI tools", bt["cli"])
     show("Direct API calls", bt["api_calls"], "  (curl and similar, run by the agent)")
     show("Plugins", bt["plugins"], "  (skills or subagents that came from a plugin)")
+    show("Messages to sessions", bt["messages"], "  (to subagents or your other sessions, by recipient)")
     show("Plan mode", bt["plan"])
     show("Permission modes", bt["modes"], "  (turns in each mode)")
     show("Worktrees", bt["worktrees"])
