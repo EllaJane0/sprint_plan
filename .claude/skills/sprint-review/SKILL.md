@@ -58,8 +58,9 @@ python3 <skill-dir>/scripts/sprint_scan.py --since <ISO date> --projects <path> 
 
 You get back per-day activity, session count and duration, the user's own prompts, tool
 usage counts, and **Builder tools used**: the skills, slash commands, hooks, subagents, MCP
-servers, plan mode, permission modes, worktrees, and memory and instruction files the sessions
-used. These are counts and names only. Also read the git log for the window, in this repo and in every other repo the
+servers (connectors), service CLI tools such as `gh` or `supabase`, direct API calls such as
+`curl`, plugins, plan mode, permission modes, worktrees, and memory and instruction files the
+sessions used. These are counts and names only. Also read the git log for the window, in this repo and in every other repo the
 work happened in: the ones listed under **Where the work lives** in the README, and any local
 repo among the confirmed projects. For each, summarize its commits in the window: count, days,
 and messages. Never copy code or file contents from another repo into the report; a company
@@ -125,8 +126,9 @@ URL. For a repo that is not shared, a short list of its commits in the window: d
 ## Builder tools you used
 
 <a table from the scan's BUILDER TOOLS USED section, one row each: Skills you wrote, Course
-skills, Slash commands, Hooks, Subagents, MCP servers, Plan mode, Permission mode, Worktrees,
-Memory and instructions. Columns: what it is (one plain line), what you used this sprint (names
+skills, Plugins, Slash commands, Hooks, Subagents, Plan mode, Permission mode, Worktrees, Memory
+and instructions, and **Reaching outside the repo** (one row with its three routes: service CLI
+tools, MCP servers and connectors, direct API calls). Columns: what it is (one plain line), what you used this sprint (names
 and counts, or "not used"). A skill the builder wrote (anything not sprint-plan, sprint-review,
 learn or eli5) goes under Skills you wrote. For Memory and instructions, say which files loaded
 (CLAUDE.md, MEMORY.md) and whether any were edited. Then one sentence listing the building

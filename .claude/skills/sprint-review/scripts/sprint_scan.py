@@ -168,6 +168,23 @@ def tool_uses(path, tool="claude"):
 
 
 COURSE_SKILLS = {"sprint-plan", "sprint-review", "learn", "eli5"}
+# Command-line tools for outside services: one of the three routes beyond the repo (with MCP
+# servers and direct API calls). Shell basics like ls or git are not counted here.
+SERVICE_CLIS = {"gh", "supabase", "vercel", "netlify", "stripe", "firebase", "aws", "gcloud", "az",
+                "heroku", "railway", "fly", "flyctl", "wrangler", "render", "expo", "eas", "neonctl",
+                "turso", "prisma", "doctl", "linear", "op", "resend", "twilio", "shopify", "sentry-cli"}
+API_CLIS = {"curl", "wget", "http", "https", "xh"}
+
+
+def programs(command):
+    """The program at the start of each part of a shell command, skipping VAR=value prefixes and
+    sudo; for npx and bunx, the package it runs."""
+    for part in re.split(r"&&|\|\||;|\|", command):
+        words = [w for w in part.strip().split() if not re.match(r"^\w+=", w) and w != "sudo"]
+        if words and words[0] in ("npx", "bunx", "pnpx") and len(words) > 1:
+            words = [w for w in words[1:] if not w.startswith("-")] or words
+        if words:
+            yield Path(words[0]).name
 
 
 def builder_tools(path, tool="claude"):
@@ -176,7 +193,8 @@ def builder_tools(path, tool="claude"):
     loaded or wrote. Counts and names only; never prompt or file content. Codex logs carry tool
     names only, so they add nothing here."""
     out = {k: Counter() for k in ("skills", "commands", "hooks", "hooks_blocked", "subagents", "mcp",
-                                  "modes", "plan", "worktrees", "instructions_loaded", "memory_written")}
+                                  "cli", "api_calls", "plugins", "modes", "plan", "worktrees",
+                                  "instructions_loaded", "memory_written")}
     if tool == "codex":
         return out
     try:
@@ -218,6 +236,12 @@ def builder_tools(path, tool="claude"):
                     if not (isinstance(b, dict) and b.get("type") == "tool_use"):
                         continue
                     name, inp = b.get("name", ""), b.get("input") or {}
+                    if name == "Bash":
+                        for prog in programs(str(inp.get("command", ""))):
+                            if prog in SERVICE_CLIS:
+                                out["cli"][prog] += 1
+                            elif prog in API_CLIS:
+                                out["api_calls"][prog] += 1
                     if name == "Skill":
                         out["skills"][inp.get("skill", "?")] += 1
                     elif name in ("Agent", "Task"):
@@ -270,6 +294,10 @@ def cmd_analyze(since, wanted):
     def show(label, c, note=""):
         items = ", ".join(f"{k} ({v})" for k, v in c.most_common(10))
         print(f"  {label:<22} {items or 'none'}{note}")
+    # A skill or subagent named plugin:name came from a plugin.
+    for k, v in list(bt["skills"].items()) + list(bt["subagents"].items()):
+        if ":" in k:
+            bt["plugins"][k.split(":")[0]] += v
     own = Counter({k: v for k, v in bt["skills"].items() if k not in COURSE_SKILLS})
     course = Counter({k: v for k, v in bt["skills"].items() if k in COURSE_SKILLS})
     print("\nBUILDER TOOLS USED (counts across the confirmed sessions)")
@@ -279,7 +307,10 @@ def cmd_analyze(since, wanted):
     show("Hooks that ran", bt["hooks"])
     show("Hooks that blocked", bt["hooks_blocked"])
     show("Subagents", bt["subagents"])
-    show("MCP servers", bt["mcp"])
+    show("MCP servers", bt["mcp"], "  (connectors from the Claude app appear as claude_ai_...)")
+    show("Service CLI tools", bt["cli"])
+    show("Direct API calls", bt["api_calls"], "  (curl and similar, run by the agent)")
+    show("Plugins", bt["plugins"], "  (skills or subagents that came from a plugin)")
     show("Plan mode", bt["plan"])
     show("Permission modes", bt["modes"], "  (turns in each mode)")
     show("Worktrees", bt["worktrees"])
