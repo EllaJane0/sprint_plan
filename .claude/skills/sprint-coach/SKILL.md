@@ -172,8 +172,12 @@ about the category and point to the files the reason names.
 
 ## Writing and other rules
 
-- Second person, plain and literal. Short sentences. No em dashes, no figures of speech, no
-  "not X, but Y". No emoji. Define a technical word the first time you use it.
+- Second person, plain and literal. Short sentences. No em dashes, no "not X, but Y". No emoji.
+  Define a technical word the first time you use it.
+- No mannered prose. Mannered prose substitutes metaphor and flourish for direct statement:
+  "a dial worth turning" instead of "a parameter worth varying", "this point earns its keep"
+  instead of "this point still matters". It makes the reader work harder and drags in meanings
+  you did not choose. Say what you mean; when a literal phrase is available, use it.
 - One question per message, and wait for the answer.
 - Facts come from the prompt and their files. If something is in neither, say you cannot see
   it; do not guess how the report was produced.
