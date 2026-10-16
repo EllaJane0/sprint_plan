@@ -74,25 +74,27 @@ Sections of the [course book](https://byu-strategy.github.io/product-management/
 model have a **Learn in Claude** button beside their heading. It copies a prompt; paste it into
 Claude Code for a tutoring session on that section. Bring your own questions, or let Claude lead,
 and say "quick" or "go deeper" whenever you like. It ends with a short check and commits a log to
-`learning/`.
+`learning/`. To learn one builder concept, give its id: `/learn DE02` teaches the passage for
+concept DE02. Your sprint report links each concept it lists to its passage.
 
 When an idea will not click in words, type `/eli5 <the idea>` (or say "explain it like I'm
 five"). Claude draws a one-page picture of it with very few words and gives you a link to open
 it (or, if it cannot make a link, saves it under `learning/eli5/` and tells you where). `/learn`
 offers this on its own when you get stuck.
 
-### Get /learn in an existing repo
+## Update your course skills
 
-If you made your repo before `/learn` existed, run this once from your repo's folder, in the
-VS Code terminal (Git Bash on Windows). It copies the skill, the log template, `/eli5`, and the updated
-`/sprint-review`, which lists your learning sessions:
+The course skills (`/sprint-plan`, `/sprint-review`, `/sprint-coach`, `/learn`, `/eli5`) live in
+`.claude/skills/`. They change during the semester. When the course or your sprint report asks you
+to update them, open Claude Code in this repo and paste this:
 
-```bash
-B=https://raw.githubusercontent.com/byu-strategy/builder-template/main; for f in .claude/skills/learn/SKILL.md .claude/skills/learn/scripts/fetch_section.mjs .claude/skills/eli5/SKILL.md .claude/skills/eli5/LICENSE learning/000-learning-template.md .claude/skills/sprint-review/SKILL.md .claude/skills/sprint-review/scripts/sprint_scan.py; do curl -fsSL --create-dirs -o "$f" "$B/$f" || echo "Could not download $f"; done
+```text
+Update my course skills from the class template. Clone https://github.com/byu-strategy/builder-template (main branch) into a temporary folder outside this repo with `git clone --depth 1`. For each folder in the template's `.claude/skills`, replace the folder with the same name in this repo's `.claude/skills` with the template's copy, and add any that are missing. Do not change any other skill or any other file in this repo. Delete the temporary folder, then commit only `.claude/skills` with the message "Update course skills" and push. Then tell me to start a new Claude Code session so the updated skills load.
 ```
 
-Then commit the new files (`git add .claude learning && git commit -m "Add /learn"`) and start
-a new Claude Code session so it picks up the skill.
+It copies every course skill from this template into your repo and leaves the rest of your repo
+as it is. A skill you wrote yourself keeps working, unless you gave it the same name as a course
+skill.
 
 ## Ground rules
 
