@@ -227,6 +227,15 @@ their Loom demo link.
 
 If they want to change an answer later, they edit the file and commit again; that is fine.
 
+## Decisions
+
+A decision counts as the builder's when the builder proposed it, or chose between options the
+agent offered and wrote down why. When the report describes a choice made during the sprint
+(in **Where you got stuck**, **What took the most time**, or **Against your plan**), say who made
+it on that basis: an option the agent picked and the builder accepted without a reason is the
+agent's choice, and the report says so plainly. You may describe options; you never pick for the
+builder, and you never write a decision record in their name without their own reason.
+
 ## Rules
 
 - Never read a project the user did not confirm.

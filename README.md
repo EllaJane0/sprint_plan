@@ -64,6 +64,8 @@ Each sprint:
 /sprint-plan     # start of the sprint: commit the plan, submit it on Canvas by Wednesday
 # ...do the work...
 /sprint-review   # on or before the Monday the sprint ends: writes the report, asks your five retro questions, then commit
+# when your sprint report arrives: press Copy prompt in it and paste the prompt into Claude Code;
+# the sprint-coach skill goes over the report with you and updates your next plan
 ```
 
 ## Learning a section
