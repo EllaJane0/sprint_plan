@@ -5,7 +5,7 @@ Reads only what it is told to read. --list reads each transcript's recorded work
 directory and nothing else; message content is opened solely for the projects named
 with --projects. Nothing is sent anywhere.
 """
-import argparse, json, os, re, sys, datetime as dt
+import argparse, json, os, re, subprocess, sys, datetime as dt
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -269,6 +269,156 @@ def builder_tools(path, tool="claude"):
     return out
 
 
+# ---------------------------------------------------------------- users this sprint
+# Evidence that people outside the team used the work, and that the builder changed it because of
+# them (depth level 4). Calibrated 2026-10-15 on a product with real users: a production read by
+# itself proves nothing (it happens before any user exists), so lookups are not reported; what
+# counts is a person who did or said something, followed by a change.
+DB_CALL = re.compile(r"\b(psql|pgcli|mysql|mongosh|neonctl|turso db shell|pscale shell)\b|/rest/v1/|firestore|"
+                     r"firebase-admin|\.from\(['\"]\w+['\"]\)|prisma\.\w+\.(count|groupBy|find)", re.I)
+USER_TABLE = re.compile(r"\b(auth\.)?(users?|profiles?|accounts?|members|signups?|waitlist|sessions|events|"
+                        r"page_?views|visits|feedback|orders|subscriptions|customers|submissions)\b", re.I)
+AGGREGATE = re.compile(r"count\(\s*distinct|group by|date_trunc|interval '\d|last_sign_in|last_seen", re.I)
+LOCAL = re.compile(r"127\.0\.0\.1|localhost|:54322|supabase start|\.env\.(localdb|test|demo)|seed|fixture|faker|"
+                   r"demo\.local|example\.com|/api/health|\[boot\]", re.I)
+LOGS = re.compile(r"\b(vercel|railway|netlify|fly|flyctl|heroku|render) logs\b|wrangler tail|firebase functions:log|"
+                  r"gcloud logging read|analytics/endpoints/logs|sentry-cli|sentry\.io/api|posthog\.com/api|"
+                  r"plausible\.io/api|mixpanel|amplitude", re.I)
+LOG_FILTER = re.compile(r"--filter|grep\b.*(user|@|/api/|/auth)", re.I)
+REPORT = re.compile(r"\b(a|one|this|my|our|the) (user|customer|teacher|professor|client|tester|student|player|buyer)s?\b"
+                    r".{0,40}\b(said|told|asked|emailed|texted|reported|complained|is seeing|ran into|couldn'?t|"
+                    r"didn'?t (like|understand|know))|feedback from|got (some|this) feedback|on a (call|zoom|meeting) with|"
+                    r"screen ?shar|user (interview|test)|interviewed|forwarded message|^(From|Subject):", re.I | re.M)
+NAMED = re.compile(r"\b([A-Z][a-z]{2,})(?: [A-Z][a-z]+)? (?:just )?(said|asked|wants|reported|submitted|didn'?t like|"
+                   r"couldn'?t|emailed|texted|told me)\b")
+NOT_NAMES = {"Claude", "Codex", "Cursor", "Vercel", "Supabase", "Stripe", "Google", "Chrome", "Railway", "Firebase",
+             "The", "This", "That", "It", "He", "She", "They", "You", "We", "Someone", "Nobody", "Everyone", "Agent"}
+TICKET = re.compile(r"/fix-bug|/triage|gh issue (view|list)|\bfrom (bug_reports|feedback|tickets|support_\w+)", re.I)
+SELF_FILED = re.compile(r"/file-bug|engineering-filed|not user-reported", re.I)
+OUTREACH = re.compile(r"api\.resend\.com/emails|resend\.emails\.send|mailgun\.net/v3/\S+/messages|api\.sendgrid\.com|"
+                      r"postmarkapp|chat\.postMessage|inviteUserByEmail|/auth/v1/invite|notify[-_]?(shipped|reporter|users)",
+                      re.I)
+CHANGE_MSG = re.compile(r"\((bug|issue|ticket) [0-9a-f]{6,}\)|(fixes|closes|resolves) #\d+|reported by|feedback from|"
+                        r"(a|the|one) (user|customer|tester|teacher|student|player)s? (reported|said|asked|couldn'?t)", re.I)
+EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.]+")
+
+
+def _skip_prompt(text):
+    return (text.startswith(("This session is being continued", "<", "Base directory for this skill"))
+            or "<task-notification>" in text or "<cross-session-message" in text
+            or text.startswith("Another Claude session sent a message"))
+
+
+def _clip(text, n=110):
+    """One line of evidence, with email addresses removed (the report is committed to a repo)."""
+    return EMAIL.sub("[email]", " ".join(str(text).split()))[:n]
+
+
+def users_signals(path, self_emails, tool="claude", since="", roots=()):
+    """Hits, in time order: (timestamp, kind, strength, evidence). Kinds: user report in your own
+    words, a ticket from someone else, usage counted over people, logs filtered to users, a message
+    to users, and a change made after a user signal in the same session."""
+    hits = []
+    if tool == "codex":
+        return hits
+    try:
+        fh = open(path, "r", errors="replace")
+    except OSError:
+        return hits
+    signal_at = None
+    with fh:
+        for line in fh:
+            try:
+                d = json.loads(line)
+            except Exception:
+                continue
+            ts = d.get("timestamp", "")
+            if ts and since and ts < since:
+                continue
+            if d.get("type") == "user":
+                c = (d.get("message") or {}).get("content")
+                text = c if isinstance(c, str) else " ".join(
+                    b.get("text", "") for b in c or [] if isinstance(b, dict) and b.get("type") == "text")
+                text = text.strip()
+                if not text or _skip_prompt(text):
+                    continue
+                m = REPORT.search(text)
+                n = next((x for x in NAMED.finditer(text) if x.group(1) not in NOT_NAMES), None)
+                if (m or n) and not re.search(r"\b(assume|pretend|imagine|role-?play|persona|what if)\b", text, re.I):
+                    named = NAMED.sub(lambda x: x.group(0) if x.group(1) in NOT_NAMES else "[user] " + x.group(2), text)
+                    hits.append((ts, "a user report, in your words", "strong", _clip(named)))
+                    signal_at = signal_at or ts
+                if TICKET.search(text) and not SELF_FILED.search(text):
+                    hits.append((ts, "a ticket loaded", "strong", _clip(text, 60)))
+                    signal_at = signal_at or ts
+            elif d.get("type") == "assistant":
+                for b in (d.get("message") or {}).get("content") or []:
+                    if not (isinstance(b, dict) and b.get("type") == "tool_use"):
+                        continue
+                    name, inp = b.get("name", ""), b.get("input") or {}
+                    if name in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
+                        fp = str(inp.get("file_path", ""))
+                        if signal_at and any(fp.startswith(r) for r in roots) and not re.search(r"scratch|/tmp/|\.test\.", fp):
+                            hits.append((ts, "a change after a user signal", "level 4",
+                                         f"edited {Path(str(inp.get('file_path', '?'))).name}"))
+                            signal_at = None
+                        continue
+                    cmd = str(inp.get("command", "")) if name == "Bash" else json.dumps(inp)[:2000]
+                    if name == "Bash" and re.search(r"cat\s*>>?\s*\S|python3? -\s*<<|open\(p\)", cmd):
+                        continue  # writing code that mentions a query is not running one
+                    if name == "Bash" and set(programs(cmd)) <= {"grep", "rg", "ls", "cat", "head", "tail", "sed", "find", "echo", "cd"}:
+                        continue
+                    is_db = DB_CALL.search(cmd) or (name.startswith("mcp__") and re.search(
+                        r"supabase|neon|firebase|planetscale|postgres", name, re.I) and re.search(r"sql|query", name, re.I))
+                    mine = LOCAL.search(cmd) or any(e and e.lower() in cmd.lower() for e in self_emails)
+                    if is_db and USER_TABLE.search(cmd) and AGGREGATE.search(cmd) and not mine:
+                        hits.append((ts, "usage counted over people", "medium", _clip(cmd)))
+                    if LOGS.search(cmd) and LOG_FILTER.search(cmd) and not mine:
+                        hits.append((ts, "logs filtered to users", "medium", _clip(cmd)))
+                    if TICKET.search(cmd) and not SELF_FILED.search(cmd) and not mine:
+                        hits.append((ts, "a ticket loaded", "strong", _clip(cmd, 80)))
+                        signal_at = signal_at or ts
+                    if OUTREACH.search(cmd) and not mine:
+                        hits.append((ts, "a message to users", "medium", _clip(cmd, 80)))
+                    if name == "Bash" and "git commit" in cmd and signal_at:
+                        msg = re.search(r"-m\s+[\"']([^\"']{1,120})", cmd)
+                        hits.append((ts, "a change after a user signal", "level 4",
+                                     f"commit \"{_clip(msg.group(1) if msg else 'see git log', 90)}\""))
+                        signal_at = None
+    # One line per session and kind: the first piece of evidence, and how many times it recurred.
+    out, seen = [], {}
+    for h in hits:
+        k = (h[1], h[2])
+        if k in seen:
+            seen[k][4] += 1
+        else:
+            seen[k] = [*h, 1]
+            out.append(seen[k])
+    return [(ts, kind, st, ev + (f"  (x{n} in this session)" if n > 1 else "")) for ts, kind, st, ev, n in out]
+
+
+def users_from_git(repo, since):
+    """Commits in the window whose message ties the change to a user or a ticket."""
+    try:
+        out = subprocess.run(["git", "-C", repo, "log", f"--since={since.isoformat()}", "--format=%h %ad %s",
+                              "--date=short"], capture_output=True, text=True, timeout=30).stdout
+    except Exception:
+        return []
+    return [line for line in out.splitlines() if CHANGE_MSG.search(line)]
+
+
+def self_emails(repos):
+    found = set()
+    for r in repos:
+        try:
+            e = subprocess.run(["git", "-C", r, "config", "user.email"], capture_output=True, text=True, timeout=10).stdout.strip()
+        except Exception:
+            e = ""
+        if e:
+            found.add(e)
+    return found
+
+
 def cmd_analyze(since, wanted):
     want = {w.rstrip("/") for w in wanted}
     picked = [(tool, f) for tool, cwd, f, _m in sessions(since)
@@ -327,6 +477,19 @@ def cmd_analyze(since, wanted):
     show("Worktrees", bt["worktrees"])
     show("Instructions loaded", bt["instructions_loaded"], "  (times each file was loaded)")
     show("Memory written", bt["memory_written"], "  (edits to memory or instruction files)")
+
+    selfs = self_emails(want)
+    roots = tuple(w + "/" for w in want)
+    uh = sorted(h for tool, f in picked for h in users_signals(f, selfs, tool, since.isoformat()[:19], roots))
+    commits = sorted({c for w in want for c in users_from_git(w, since)})
+    print("\nUSERS THIS SPRINT (people outside the team, and changes made because of them)")
+    if not uh and not commits:
+        print("  none found")
+    for ts, kind, strength, ev in uh[:40]:
+        print(f"  [{ts[:16]}] {strength:<7} {kind}: {ev}")
+    for c in commits[:20]:
+        print(f"  commit tied to a user or ticket: {_clip(c, 120)}")
+    print("  (production lookups by id are not listed: they happen whether or not anyone uses the app)")
 
     print("\nPROMPTS (chronological, truncated)")
     for ts, text in sorted(prompts, key=lambda x: x[0]):

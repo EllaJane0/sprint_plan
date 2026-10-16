@@ -60,7 +60,10 @@ You get back per-day activity, session count and duration, the user's own prompt
 usage counts, and **Builder tools used**: the skills, slash commands, hooks, subagents, MCP
 servers (connectors), service CLI tools such as `gh` or `supabase`, direct API calls such as
 `curl`, plugins, messages sent to other sessions, plan mode, permission modes, worktrees, and memory and instruction files the
-sessions used. These are counts and names only. Also read the git log for the window, in this repo and in every other repo the
+sessions used. These are counts and names only. It also lists **Users this sprint**: signs that people
+outside the team used the work (a user's report in your own prompts, a ticket someone else filed,
+usage counted over people, logs filtered to users, messages to users) and any change you made after
+one, plus commits whose message ties a change to a user or a ticket. Also read the git log for the window, in this repo and in every other repo the
 work happened in: the ones listed under **Where the work lives** in the README, and any local
 repo among the confirmed projects. For each, summarize its commits in the window: count, days,
 and messages. Never copy code or file contents from another repo into the report; a company
@@ -136,6 +139,17 @@ blocks not used this sprint, as a plain fact, for example "Not used this sprint:
 subagents, plan mode." Never judge how many is enough, and never copy prompt or file content.
 Codex sessions record tool names only, so say "Codex sessions do not show these" when there
 were any>
+
+## Users this sprint
+
+<from the scan's USERS THIS SPRINT section: people outside your team who used the work, and what
+you changed because of them. A short table, one row per real instance: date, what happened (a
+user's report, a ticket from someone else, usage counted over people, logs filtered to users, a
+message to users), and the change that followed (the file or the commit), or "no change yet".
+Refer to people by role ("a tester", "a customer"), never by name or email: this file is
+committed. Check each hit against the plan's team and drop teammates, test accounts and your own
+account. Production lookups by id are not users. If nothing real is left, write "No outside users
+this sprint." as a plain fact, without judging it>
 
 ## Learning sessions
 
