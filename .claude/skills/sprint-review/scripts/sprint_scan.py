@@ -9,6 +9,10 @@ import argparse, json, os, re, subprocess, sys, datetime as dt
 from collections import Counter, defaultdict
 from pathlib import Path
 
+# The roster reads this line to tell whether a student's /sprint-review is current. Change the date
+# whenever the scan or SKILL.md changes in a way the grader relies on.
+SCAN_VERSION = "2026-10-16"
+
 ROOT = Path.home() / ".claude" / "projects"
 CODEX = Path.home() / ".codex" / "sessions"   # Codex CLI and the Codex VS Code extension
 
@@ -167,7 +171,52 @@ def tool_uses(path, tool="claude"):
                     yield b.get("name", "?")
 
 
-COURSE_SKILLS = {"sprint-plan", "sprint-review", "learn", "eli5"}
+COURSE_SKILLS = {"sprint-plan", "sprint-review", "sprint-coach", "learn", "eli5"}
+# Subagent types that ship with Claude Code. Claude can start these on its own (Explore during a
+# search, for example), so they are listed apart from agents the builder or a plugin defined.
+BUILTIN_AGENTS = {"general-purpose", "Explore", "Plan", "statusline-setup", "claude-code-guide",
+                  "output-style-setup", "fork"}
+# Where a session ran, from the entrypoint every record carries. "sdk-cli" is a non-interactive
+# run: `claude -p "..."` in a terminal or a script, or a program built on the Agent SDK.
+SURFACES = {"cli": "terminal or IDE, interactive", "sdk-cli": "non-interactive (claude -p or the Agent SDK)",
+            "sdk-ts": "Agent SDK (TypeScript)", "sdk-py": "Agent SDK (Python)",
+            "claude-vscode": "VS Code extension", "claude-desktop": "Claude desktop app"}
+
+
+def permission_event(d):
+    """What happened to one tool call's permission, from a user record that carries its result, or
+    None when nothing worth listing happened (a call the current mode or a hook settled is not one;
+    hooks have their own rows). Newer logs record the decision in permissionDecision; older ones
+    only in the error text, so both are read."""
+    tur = d.get("toolUseResult")
+    text = tur if isinstance(tur, str) else ""
+    if not text:
+        c = (d.get("message") or {}).get("content")
+        if isinstance(c, list):
+            text = " ".join(str(b.get("content", "")) for b in c
+                            if isinstance(b, dict) and b.get("type") == "tool_result" and b.get("is_error"))
+    if "User rejected tool use" in text or "doesn't want to proceed with this tool use" in text:
+        return "you declined at a prompt"
+    if "denied by the Claude Code auto mode classifier" in text:
+        return "blocked by auto mode"
+    if "denied by a built-in Claude Code safety check" in text:
+        return "blocked by a built-in safety check"
+    pd = d.get("permissionDecision")
+    if isinstance(pd, dict):
+        decision, source, reason = pd.get("decision"), pd.get("source"), pd.get("reasonType")
+        if decision == "accept" and source == "user_temporary":
+            return "you approved at a prompt"
+        if decision == "accept" and source == "user_permanent":
+            return "you approved and saved a rule"
+        if decision == "reject" and source == "config" and reason == "safetyCheck":
+            return "blocked by a built-in safety check"
+        if decision == "reject" and source == "config":
+            return "denied by a permission rule"
+        if decision == "accept" and source == "config" and reason == "rule":
+            return "allowed by a permission rule"
+    if re.search(r"Permission to use \S+ .*has been denied", text, re.S):
+        return "denied by a permission rule or mode"
+    return None
 # Command-line tools for outside services: one of the three routes beyond the repo (with MCP
 # servers and direct API calls). Shell basics like ls or git are not counted here.
 SERVICE_CLIS = {"gh", "supabase", "vercel", "netlify", "stripe", "firebase", "aws", "gcloud", "az",
@@ -192,8 +241,9 @@ def builder_tools(path, tool="claude"):
     MCP servers, plan mode, permission modes, worktrees, and the memory and instruction files it
     loaded or wrote. Counts and names only; never prompt or file content. Codex logs carry tool
     names only, so they add nothing here."""
-    out = {k: Counter() for k in ("skills", "commands", "hooks", "hooks_blocked", "subagents", "mcp",
-                                  "cli", "api_calls", "plugins", "messages", "modes", "plan", "worktrees",
+    out = {k: Counter() for k in ("skills", "commands", "hooks", "hooks_blocked", "subagents",
+                                  "subagents_named", "mcp", "cli", "api_calls", "plugins", "messages",
+                                  "modes", "plan", "worktrees", "permissions", "surfaces",
                                   "instructions_loaded", "memory_written")}
     if tool == "codex":
         return out
@@ -201,6 +251,7 @@ def builder_tools(path, tool="claude"):
         fh = open(path, "r", errors="replace")
     except OSError:
         return out
+    surface = None
     with fh:
         for line in fh:
             try:
@@ -208,9 +259,18 @@ def builder_tools(path, tool="claude"):
             except Exception:
                 continue
             t = d.get("type")
+            if surface is None and d.get("entrypoint"):
+                surface = d["entrypoint"]
+                out["surfaces"][SURFACES.get(surface, surface)] += 1
             if t == "user":
                 if d.get("permissionMode"):
                     out["modes"][d["permissionMode"]] += 1
+                    if d["permissionMode"] == "plan":
+                        # Plan mode turned on with Shift+Tab shows only as the permission mode.
+                        out["plan"]["turns in plan mode"] += 1
+                ev = permission_event(d)
+                if ev:
+                    out["permissions"][ev] += 1
                 c = (d.get("message") or {}).get("content")
                 if isinstance(c, str):
                     m = re.search(r"<command-name>/?([^<]+)</command-name>", c)
@@ -245,7 +305,8 @@ def builder_tools(path, tool="claude"):
                     if name == "Skill":
                         out["skills"][inp.get("skill", "?")] += 1
                     elif name in ("Agent", "Task"):
-                        out["subagents"][inp.get("subagent_type") or "general-purpose"] += 1
+                        kind = inp.get("subagent_type") or "general-purpose"
+                        out["subagents" if kind in BUILTIN_AGENTS else "subagents_named"][kind] += 1
                     elif name.startswith("mcp__"):
                         out["mcp"][name.split("__")[1]] += 1
                     elif name == "SendMessage":
@@ -455,25 +516,29 @@ def cmd_analyze(since, wanted):
         items = ", ".join(f"{k} ({v})" for k, v in c.most_common(10))
         print(f"  {label:<22} {items or 'none'}{note}")
     # A skill or subagent named plugin:name came from a plugin.
-    for k, v in list(bt["skills"].items()) + list(bt["subagents"].items()):
+    for k, v in list(bt["skills"].items()) + list(bt["subagents_named"].items()):
         if ":" in k:
             bt["plugins"][k.split(":")[0]] += v
     own = Counter({k: v for k, v in bt["skills"].items() if k not in COURSE_SKILLS})
     course = Counter({k: v for k, v in bt["skills"].items() if k in COURSE_SKILLS})
+    print(f"SCAN VERSION: {SCAN_VERSION}")
     print("\nBUILDER TOOLS USED (counts across the confirmed sessions)")
     show("Skills, your own", own)
     show("Skills, course", course)
     show("Slash commands", bt["commands"])
     show("Hooks that ran", bt["hooks"])
     show("Hooks that blocked", bt["hooks_blocked"])
-    show("Subagents", bt["subagents"])
+    show("Subagents, named", bt["subagents_named"], "  (defined in .claude/agents, by a plugin, or by you)")
+    show("Subagents, built-in", bt["subagents"], "  (ship with Claude Code; Claude may start these on its own)")
     show("MCP servers", bt["mcp"], "  (connectors from the Claude app appear as claude_ai_...)")
     show("Service CLI tools", bt["cli"])
     show("Direct API calls", bt["api_calls"], "  (curl and similar, run by the agent)")
     show("Plugins", bt["plugins"], "  (skills or subagents that came from a plugin)")
     show("Messages to sessions", bt["messages"], "  (to subagents or your other sessions, by recipient)")
-    show("Plan mode", bt["plan"])
+    show("Plan mode", bt["plan"], "  (plan tool calls, and turns spent in plan mode)")
     show("Permission modes", bt["modes"], "  (turns in each mode)")
+    show("Permission prompts", bt["permissions"], "  (prompts you answered, and calls a rule or check denied)")
+    show("Where sessions ran", bt["surfaces"], "  (sessions by surface)")
     show("Worktrees", bt["worktrees"])
     show("Instructions loaded", bt["instructions_loaded"], "  (times each file was loaded)")
     show("Memory written", bt["memory_written"], "  (edits to memory or instruction files)")
@@ -536,6 +601,7 @@ def cmd_learning(since, repo):
             "time": field(text, "Time"),
             "start": field(text, "Starting point"),
             "confidence": field(text, "Confidence"),
+            "concept": field(text, "Concept"),
             "asked": field(text, "What I asked about"),
             "question": field(text, "Still wondering"),
         })
@@ -548,13 +614,14 @@ def cmd_learning(since, repo):
         print("  by axis: " + ", ".join(f"{k} {v}" for k, v in sorted(axes.items(), key=lambda x: -x[1])))
     for g in logs:
         print(f"\n  {g['day']}  {g['section']}  ({g['file']})")
-        for k in ("time", "finished", "axis", "asked", "start", "confidence", "question"):
+        for k in ("concept", "time", "finished", "axis", "asked", "start", "confidence", "question"):
             if g[k]:
                 print(f"    {k}: {g[k][:300]}")
 
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--version", action="version", version=f"sprint_scan {SCAN_VERSION}")
     ap.add_argument("--since", required=True, help="ISO date, e.g. 2026-10-12")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--analyze", action="store_true")

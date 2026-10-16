@@ -9,7 +9,8 @@ Read what actually happened over the last two weeks and write it up. The report 
 builder first: it is usually more accurate about where the time went than memory is.
 
 Run `scripts/sprint_scan.py` in this skill's directory to do the reading. It never sends
-anything anywhere.
+anything anywhere. Its `SCAN_VERSION` line is how the course checks that your copy of this skill is
+current; `python3 <skill-dir>/scripts/sprint_scan.py --version` prints it.
 
 ## Steps
 
@@ -59,8 +60,9 @@ python3 <skill-dir>/scripts/sprint_scan.py --since <ISO date> --projects <path> 
 You get back per-day activity, session count and duration, the user's own prompts, tool
 usage counts, and **Builder tools used**: the skills, slash commands, hooks, subagents, MCP
 servers (connectors), service CLI tools such as `gh` or `supabase`, direct API calls such as
-`curl`, plugins, messages sent to other sessions, plan mode, permission modes, worktrees, and memory and instruction files the
-sessions used. These are counts and names only. It also lists **Users this sprint**: signs that people
+`curl`, plugins, messages sent to other sessions, plan mode, permission modes, permission prompts
+and denials, where the sessions ran (interactive, or non-interactive with `claude -p`), worktrees,
+and memory and instruction files the sessions used. These are counts and names only. It also lists **Users this sprint**: signs that people
 outside the team used the work (a user's report in your own prompts, a ticket someone else filed,
 usage counted over people, logs filtered to users, messages to users) and any change you made after
 one, plus commits whose message ties a change to a user or a ticket. Also read the git log for the window, in this repo and in every other repo the
@@ -76,7 +78,7 @@ python3 <skill-dir>/scripts/sprint_scan.py --since <ISO date> --learning .
 ```
 
 It reads only `learning/YYYY-MM-DD-*.md` in this repo: the section, time, whether it finished,
-the axis it was logged against, what the builder asked about, starting point and confidence (both 1 to 5), and the
+the axis it was logged against, the concept id if the session focused on one, what the builder asked about, starting point and confidence (both 1 to 5), and the
 question they still had, plus a count by axis.
 
 ### 5. Work out what happened
@@ -87,10 +89,11 @@ question they still had, plus a count by axis.
 - **What took the most time.** By session duration and prompt volume, not by commit count.
 - **Which axis this advanced.** Pick exactly one, from the work itself rather than from what
   they intended:
-  - **Agentic Workflow**: directing the agent, CLAUDE.md, slash commands, subagents, specs;
-    building AI into the product: prompts, tool use, agent loops, evals
+  - **Agentic Workflow**: directing the agent, CLAUDE.md, slash commands, skills, hooks,
+    subagents; building AI into the product: prompts, tool use, agent loops, evals
   - **Discovery**: users, interviews, problem framing, validation, positioning research
-  - **Design**: interface, layout, flow, usability, responsive work
+  - **Design**: interface, layout, flow, usability, responsive work, and specs (user stories,
+    acceptance criteria, PRDs, decision sections)
   - **Application Architecture**: data, auth, APIs, deployment, tests, refactoring, wiring a
     model in (API calls, retrieval pipelines, cost and latency)
   - **AI Systems**: learning how the models work: neural networks, next-word prediction,
@@ -129,16 +132,24 @@ URL. For a repo that is not shared, a short list of its commits in the window: d
 ## Builder tools you used
 
 <a table from the scan's BUILDER TOOLS USED section, one row each: Skills you wrote, Course
-skills, Plugins, Slash commands, Hooks, Subagents, Messages to other sessions, Plan mode, Permission mode, Worktrees, Memory
-and instructions, and **Reaching outside the repo** (one row with its three routes: service CLI
-tools, MCP servers and connectors, direct API calls). Columns: what it is (one plain line), what you used this sprint (names
-and counts, or "not used"). A skill the builder wrote (anything not sprint-plan, sprint-review,
-learn or eli5) goes under Skills you wrote. For Memory and instructions, say which files loaded
+skills, Plugins, Slash commands, Hooks, Subagents (two lines: named ones, from `.claude/agents`, a
+plugin, or the builder, and Claude Code's built-in ones such as Explore, which Claude can start on
+its own), Messages to other sessions, Plan mode (plan tool calls and turns spent in plan mode, so
+plan mode turned on with Shift+Tab counts), Permission mode (the scan's raw names: `default`,
+`acceptEdits`, `plan`, `auto`, `dontAsk`, `bypassPermissions`), **Permission prompts and denials**
+(prompts the builder approved or declined, and calls a permission rule, auto mode, or a built-in
+safety check denied), **Where sessions ran** (interactive, or non-interactive with `claude -p` or
+the Agent SDK, the desktop app, the VS Code extension), Worktrees, Memory and instructions, and
+**Reaching outside the repo** (one row with its three routes: service CLI tools, MCP servers and
+connectors, direct API calls). Columns: what it is (one plain line), what you used this sprint
+(names and counts, or "not used"). A skill the builder wrote (anything not sprint-plan,
+sprint-review, sprint-coach, learn or eli5) goes under Skills you wrote; the course's skills go
+under Course skills. For Memory and instructions, say which files loaded
 (CLAUDE.md, MEMORY.md) and whether any were edited. Then one sentence listing the building
 blocks not used this sprint, as a plain fact, for example "Not used this sprint: hooks,
 subagents, plan mode." Never judge how many is enough, and never copy prompt or file content.
 Codex sessions record tool names only, so say "Codex sessions do not show these" when there
-were any>
+were any. Below the table, add one line: "Scan version: <the SCAN VERSION line>.">
 
 ## Users this sprint
 
@@ -154,7 +165,7 @@ this sprint." as a plain fact, without judging it>
 ## Learning sessions
 
 <count of /learn sessions logged in the window, and the count by axis. For each: date, section,
-axis, minutes, what they asked about, starting point and confidence (1 to 5), and the question they still
+concept id (if the log names one), axis, minutes, what they asked about, starting point and confidence (1 to 5), and the question they still
 had. Then one plain sentence putting learning beside building: which axes they studied and which
 axis the sprint's work advanced (from the Axis section below), for example "You studied three
 Architecture sections and the sprint advanced Architecture" or "You studied Design; the sprint's
