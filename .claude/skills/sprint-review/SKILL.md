@@ -238,6 +238,10 @@ builder, and you never write a decision record in their name without their own r
 
 ## Rules
 
+- Write the report in plain, literal sentences. No mannered prose: no metaphor or flourish where a
+  literal phrase exists ("most commits came on Oct 10 and Oct 11", not "the sprint was
+  front-loaded with a lull"). No em dashes.
+
 - Never read a project the user did not confirm.
 - Never copy transcript text into the report. Summarize.
 - Never name an excluded project. Report the count only.
