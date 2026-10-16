@@ -122,12 +122,14 @@ Describe; do not assign. You are not grading their next sprint.
 
 For each gap they want to learn, say in one line what the concept is and why it is listed, then
 offer: "Want to learn this now? I can start `/learn` on the passage." On a yes, run the `learn`
-skill with the passage link from the prompt as its argument (the link already carries `?c=<ID>`
-and the section anchor), and tell it which concept the builder wants: "Focus on <ID> <name>." When
-the lesson ends, come back here and continue where you left off.
+skill with the passage link from the prompt and the concept id as its argument, for example
+`<link> Focus on <ID> <name>` (the link already carries `?c=<ID>` and the section anchor). `/learn`
+then teaches that concept's passage and records the id in its log. When the lesson ends, come back
+here and continue where you left off.
 
-If `/learn` is not installed, say so and point them to "Get /learn in an existing repo" in the
-course template's README (https://github.com/byu-strategy/builder-template). Do not teach the
+If `/learn` is not installed, or does not take a concept id, say so and point them to "Update
+your course skills" in the course template's README
+(https://github.com/byu-strategy/builder-template#update-your-course-skills). Do not teach the
 concept from memory in its place.
 
 ### 6. Plan with /sprint-plan

@@ -4,11 +4,12 @@
 and commits it. This log is a record of learning, not a score.
 
 **Section:** [[section title]]([page URL]#[anchor])
+**Concept:** [the concept id and name, if the session focused on one concept; otherwise delete this line]
 **Date:** YYYY-MM-DD
 **Time:** [start] to [end] ([N] minutes)
 **Finished:** [yes, or "stopped early"]
 **Axis:** [the section's axis]
-**Starting point:** [1 to 5, your rating at the start]
+**Starting point:** [Developing, Proficient, or Strong, your rating at the start]
 
 ## What I asked about
 
@@ -24,11 +25,11 @@ and commits it. This log is a record of learning, not a score.
 
 ## Check
 
-[n]/[total]. Know it [n/n], Use it [n/n], Predict it [n/n]. Missed: [the idea behind each miss, or "none"], or "Not taken."
+[n]/[total] ([Developing below 50%, Proficient 50% to 79%, Strong 80% and up]). Know it [n/n], Use it [n/n], Predict it [n/n]. Missed: [the idea behind each miss, or "none"], or "Not taken."
 
 ## Confidence
 
-[1 to 5, your rating at the end. 1 New to me, 2 Familiar, 3 Conversant, 4 Direct and judge, 5 Teach it]
+[Developing, Proficient, or Strong, your rating at the end. Developing: you can't yet answer questions on it reliably. Proficient: you get most questions right, including ones that ask you to apply it. Strong: you can apply it to a new situation and predict what will happen.]
 
 ## Pictures
 

@@ -1,7 +1,7 @@
 ---
 name: learn
-description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text, asks how well they know it (1 to 5) and plays that back, has a 4 or 5 prove it, teaches whatever the section holds from first principles wherever their questions lead, checks understanding with new cases instead of asking them to repeat it, offers a short check, invites an explanation from memory near the end, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management, or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
-argument-hint: "[section link from the course book]"
+description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text (or, given a builder concept id such as DE02, the passage that teaches that concept), asks how well they know it (Developing, Proficient, or Strong, the exam's three bands) and plays that back, has a Strong prove it, teaches whatever the section holds from first principles wherever their questions lead, checks understanding with new cases instead of asking them to repeat it, offers a short check, invites an explanation from memory near the end, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management or a concept id ("/learn DE02", "Focus on DE02 ..."), or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
+argument-hint: "[section link from the course book, or a concept id such as DE02]"
 allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 ---
 
@@ -29,7 +29,8 @@ source on GitHub when this skill started. Its first line is a status.
 
 !`node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" "$ARGUMENTS"`
 
-- **LEARN-SECTION-OK**: start. Keep the Section, URL, Slug, and Fetched lines for the log.
+- **LEARN-SECTION-OK**: start. Keep the Section, URL, Slug, and Fetched lines for the log, and
+  the Concept line if there is one (see "One concept" below).
 - **LEARN-NEED-CHAPTER** or **LEARN-NEED-SECTION**: show the list and ask which one. Then run
   `node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" "<section link>"`.
 - **LEARN-SECTION-ERROR**: say what went wrong in one sentence, show the list if there is one,
@@ -37,7 +38,26 @@ source on GitHub when this skill started. Its first line is a status.
 - **Anything else** (the fetcher did not run): say so, then fetch
   `https://raw.githubusercontent.com/byu-strategy/product-management/main/<chapter>.qmd`
   (their link's page name with `.html` swapped for `.qmd`) and take the `##` section whose
-  heading matches the anchor. If that fails too, stop. Never teach from memory.
+  heading matches the anchor. For a concept id, read the published page instead
+  (`https://byu-strategy.github.io/product-management/<page>.html?c=<ID>`, from the link or from
+  `https://raw.githubusercontent.com/byu-strategy/product-management/main/scripts/grading/book-passages.json`)
+  and take the passage in the element whose `data-c` contains the id, with the section around it.
+  If that fails too, stop. Never teach from memory.
+
+### One concept
+
+The builder may name one builder concept: a concept id (two letters and two digits, such as DE02)
+alone, in a link as `?c=DE02`, or in words such as "Focus on DE02 States off the happy path". The
+fetcher finds the id in any of these and prints **Concept:** (id and name), **Concept means:** (the
+course's one-line definition), the **CONCEPT PASSAGE** (the tagged text that teaches it), and any
+**Other passages** for the same concept. If they name a concept after the section was fetched,
+run the fetcher again with the id and the link:
+`node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" "<section link> <ID>"`.
+
+With a concept, the session is about that concept. Name it in plain words in your opening
+question, teach the concept passage first, and use the rest of the section only where the
+concept needs it. Write the check questions about that concept. Offer the other passages at the
+end, if there are any. Record the concept in the log's **Concept:** line.
 
 Many sections state a model as **The model:**. Treat that as a strong hint about what matters,
 not the limit of what to teach. Read the whole section and work out what is in it: some hold one
@@ -48,46 +68,50 @@ idea, some hold several, some hold a method or a set of tradeoffs.
 ### Open
 
 Ask how well they know the section's topic, named in plain words (not the heading if the
-heading is clever), with the scale from their builder survey and an optional open invitation in
-the same message:
+heading is clever), with the course exams' three bands and an optional open invitation in the
+same message:
 
-> How well do you know <the topic, in plain words>, 1 to 5?
-> 1 New to me · 2 Familiar · 3 Conversant · 4 Direct and judge · 5 Teach it
+> How well do you know <the topic, in plain words>: Developing, Proficient, or Strong?
+> Developing: you can't yet answer questions on it reliably. Proficient: you get most questions
+> right, including ones that ask you to apply it. Strong: you can apply it to a new situation and
+> predict what will happen.
 > And if something in it confused you, or you want to go deeper somewhere, tell me.
 
-**Play their rating back.** In two or three sentences, say what that level means for this
-topic in particular, then what the session will do about it. The levels:
+These are the same three words the exams use. On an exam they are score bands: Developing below
+50%, Proficient 50% to 79%, Strong 80% and up. Here they are the builder's own estimate.
 
-| Level | Means, for this topic |
+**Play their rating back.** In two or three sentences, say what that band means for this
+topic in particular, then what the session will do about it. The bands:
+
+| Band | Means, for this topic |
 |---|---|
-| 1 New to me | You have not learned about this yet, or could not say what it is. |
-| 2 Familiar | You recognize the words but could not explain why it works. |
-| 3 Conversant | You can explain it and use the terms correctly. |
-| 4 Direct and judge | You can direct an agent or a teammate with it and tell whether the result is right. |
-| 5 Teach it | You could teach it, and catch someone else's mistake in it. |
+| Developing | You can't yet answer questions on it reliably: it is new to you, or you recognize the words but could not explain why it works. |
+| Proficient | You get most questions right, including ones that ask you to apply it: you can explain it and use the terms correctly. |
+| Strong | You can apply it to a new situation and predict what will happen, and catch a mistake in someone else's use of it. |
 
-Example: "A 2 on flows means the words 'flow' and 'happy path' are familiar, but you could not
-yet say why you map the flow before drawing screens. So we'll build that up from the start."
+Example: "Developing on flows means the words 'flow' and 'happy path' may be familiar, but you
+could not yet say why you map the flow before drawing screens. So we'll build that up from the
+start."
 
-**1 to 3: teach.** 1 or 2 starts at the beginning. 3 starts with a predict question, and skips
+**Developing: teach from the start.** **Proficient:** start with a predict question, and skip
 whatever their answer shows they already have.
 
-**4 or 5: prove it first.** The session is different. Before teaching anything, give one hard
-question at that level, in the chat, open-ended rather than multiple choice: for 4, a short
-realistic case where they must direct the next step and say how they would judge the result;
-for 5, a short worked answer or agent output with a subtle mistake in it, to find and explain.
+**Strong: prove it first.** The session is different. Before teaching anything, give one hard
+question, in the chat, open-ended rather than multiple choice: a short realistic case they have
+not seen where they must predict what happens and say why, or a short worked answer or agent
+output with a subtle mistake in it, to find and explain.
 - **They show it:** say so plainly, skip the basics, and spend the session on edge cases,
   tradeoffs, where the section's ideas break, and their own questions. The check is harder
   questions only.
 - **They partly show it:** say exactly which part was right and which was not, name the level their
-  answer showed (usually 3), and teach from the gap. Be matter-of-fact: the rating was their
+  answer showed (usually Proficient), and teach from the gap. Be matter-of-fact: the rating was their
   estimate, and the answer gives a better one.
 
 If they named something they want, still play the rating back in one line, then start with what
 they asked for.
 
 Mention once that they can say "quick" or "go deeper" at any time, and stop whenever they like.
-Note the start time (the Fetched line, or `date`), their rating, and the level their first
+Note the start time (the Fetched line, or `date`), their rating, and the band their first
 answers showed, for the log.
 
 ### Follow their questions
@@ -176,6 +200,10 @@ scenarios, not their project.
 One at a time. After they answer, say whether it was right and why the best answer wins over
 theirs, in two to four sentences. Treat the score as a guide to what to review, not a grade.
 
+At the end, put the result in the exam's band: below 50% right is Developing, 50% to 79% is
+Proficient, 80% and up is Strong. With only two or three questions the band is a rough guide, so
+say so in one line.
+
 ### Close and write the log
 
 **Explain it from memory, if they want to.** After the check, when the explanations are no
@@ -184,9 +212,11 @@ wrap up, without scrolling up: how would you explain <the main idea> to a teamma
 do not require it. If they answer, keep it word for word for the log, and correct anything wrong
 in a sentence or two. If they skip it, write "Skipped." in the log.
 
-Ask in one message: "Where are you now on this section, 1 to 5, same scale as at the start?
-And is there one thing you're still wondering about? (Optional.)" Show the scale again:
-1 New to me · 2 Familiar · 3 Conversant · 4 Direct and judge · 5 Teach it.
+Ask in one message: "Where are you now on this section: Developing, Proficient, or Strong?
+And is there one thing you're still wondering about? (Optional.)" Show the three bands again:
+Developing: you can't yet answer questions on it reliably. Proficient: you get most questions
+right, including ones that ask you to apply it. Strong: you can apply it to a new situation and
+predict what will happen.
 
 Get the end time from `date`. Write `learning/YYYY-MM-DD-<slug>.md` (the Slug from the fetch;
 add `-2`, `-3` if it exists). Follow `learning/000-learning-template.md` if the repo has it,
@@ -196,11 +226,12 @@ otherwise this shape. Create `learning/` if missing.
 # Learning log: <section title>
 
 **Section:** [<section title>](<URL>)
+**Concept:** <ID and name, if the session focused on one concept; leave the line out otherwise>
 **Date:** YYYY-MM-DD
 **Time:** <start> to <end> (<N> minutes)
 **Finished:** yes / stopped early
 **Axis:** <the section's axis>
-**Starting point:** <1 to 5, their rating at the start> (shown: <the level their first answers showed>)
+**Starting point:** <Developing, Proficient, or Strong, their rating at the start> (shown: <the band their first answers showed>)
 
 This log is a record of learning, not a score.
 
@@ -220,13 +251,13 @@ This log is a record of learning, not a score.
 
 ## Check
 
-<n>/<total>, of which <k> from the practice form. Know it <n/n>, Use it <n/n>, Predict it <n/n>.
+<n>/<total> (<Developing, Proficient, or Strong>), of which <k> from the practice form. Know it <n/n>, Use it <n/n>, Predict it <n/n>.
 Missed: <the idea behind each miss>, or "none".
 (or "Not taken.")
 
 ## Confidence
 
-<1 to 5, their rating at the end>
+<Developing, Proficient, or Strong, their rating at the end>
 
 ## Pictures
 

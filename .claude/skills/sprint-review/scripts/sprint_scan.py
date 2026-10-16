@@ -574,6 +574,17 @@ def field(text, label):
     return ""
 
 
+def band(value):
+    """A /learn rating in the exam's three bands. Logs before 2026-10-16 used 1 to 5: 1 and 2 read
+    as Developing, 3 as Proficient, 4 and 5 as Strong. Anything else is returned unchanged."""
+    m = re.match(r"\s*([1-5])\b(.*)", value or "", re.S)
+    if not m:
+        return value
+    word = {"1": "Developing", "2": "Developing", "3": "Proficient", "4": "Strong", "5": "Strong"}[m.group(1)]
+    rest = re.sub(r"(shown:\s*)([1-5])\b", lambda x: x.group(1) + band(x.group(2)).split(" (")[0], m.group(2))
+    return f"{word} (logged as {m.group(1)} on the old 1 to 5 scale){rest}"
+
+
 def cmd_learning(since, repo):
     """List the /learn sessions logged in learning/ during the window. Facts only, no score."""
     import re
@@ -599,8 +610,8 @@ def cmd_learning(since, repo):
             "finished": field(text, "Finished"),
             "axis": field(text, "Axis"),
             "time": field(text, "Time"),
-            "start": field(text, "Starting point"),
-            "confidence": field(text, "Confidence"),
+            "start": band(field(text, "Starting point")),
+            "confidence": band(field(text, "Confidence")),
             "concept": field(text, "Concept"),
             "asked": field(text, "What I asked about"),
             "question": field(text, "Still wondering"),

@@ -4,6 +4,13 @@
 //   node fetch_section.mjs "https://byu-strategy.github.io/product-management/05-interface-and-flow.html#flows-before-screens"
 //   node fetch_section.mjs "https://byu-strategy.github.io/product-management/05-interface-and-flow.html"   (lists the sections)
 //   node fetch_section.mjs                                                                                (lists the chapters)
+//   node fetch_section.mjs DE02                                                                           (the passage for one concept)
+//   node fetch_section.mjs "https://byu-strategy.github.io/product-management/05-interface-and-flow.html?c=DE02#flows-before-screens Focus on DE02"
+//
+// A builder concept id (two letters and two digits, such as DE02) can come alone, inside the
+// text, or as ?c=DE02 in the link. The skill then looks the concept up in the book repo's
+// scripts/grading/book-passages.json (and its name in scripts/grading/concepts/*.json), and,
+// when that map cannot be read, in the concept tags of the chapter sources themselves.
 //
 // The first line of output is always a status: LEARN-SECTION-OK, LEARN-NEED-SECTION,
 // LEARN-NEED-CHAPTER, or LEARN-SECTION-ERROR. It always exits 0, because the /learn skill
@@ -16,6 +23,9 @@ const SITE = "https://byu-strategy.github.io/product-management/";
 const REPO = "byu-strategy/product-management";
 const BRANCH = "main";
 const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/`;
+const CONCEPT_ID = /(?:[?&]c=|(?:^|[\s"'(<]))((?:AW|DI|DE|AA|AS|LL)\d{2})(?=$|[^\w])/i;
+const CONCEPT_FILES = { AW: "agentic", DI: "discovery", DE: "design", AA: "architecture", AS: "aisystems", LL: "launch" };
+const CHAPTER_LINE = /^\s*-\s+(\d\d[a-z]?-[\w-]+)\.qmd\s*$/gm;
 
 function get(url, redirects = 3) {
   return new Promise((resolve, reject) => {
@@ -132,6 +142,17 @@ function sectionText(doc, h) {
 
 // ---- Read the argument ---------------------------------------------------------------------
 
+// The argument may carry a link, a concept id, and free text ("Focus on DE02 Flows before
+// screens"). Return the concept id (or "") and the part that names the page.
+function splitArg(raw) {
+  const text = (raw || "").trim();
+  const c = CONCEPT_ID.exec(text);
+  const concept = c ? c[1].toUpperCase() : "";
+  const link = /(?:https?:\/\/|byu-strategy\.github\.io)\S+|\S+\.(?:html|qmd)(?:[?#]\S*)?/i.exec(text);
+  if (link) return { concept, page: link[0].replace(/[).,;'">]+$/, "") };
+  return { concept, page: concept ? "" : text };
+}
+
 function parseArg(raw) {
   let arg = (raw || "").trim().replace(/^<|>$/g, "").replace(/^["']|["']$/g, "");
   if (!arg) return null;
@@ -159,15 +180,76 @@ async function listChapters(reason) {
   try {
     const r = await get(RAW + "_quarto.yml");
     if (r.status !== 200) throw new Error(`HTTP ${r.status}`);
-    const files = [...r.body.matchAll(/^\s*-\s+(\d\d-[\w-]+)\.qmd\s*$/gm)].map((m) => m[1]).filter((f) => !f.startsWith("00-") && Number(f.slice(0, 2)) <= 15);
+    const files = [...r.body.matchAll(CHAPTER_LINE)].map((m) => m[1]).filter((f) => !f.startsWith("00-") && Number(f.slice(0, 2)) <= 15);
     console.log("Chapters of the course book (paste one, or a section link from its page):");
     for (const f of files) {
-      const words = f.slice(3).replace(/-/g, " ");
-      console.log(`- ${f.slice(0, 2)} ${words[0].toUpperCase()}${words.slice(1)}: ${SITE}${f}.html`);
+      const [num, ...rest] = f.split("-");
+      const words = rest.join(" ");
+      console.log(`- ${num} ${words[0].toUpperCase()}${words.slice(1)}: ${SITE}${f}.html`);
     }
   } catch (e) {
     console.log(`(Could not load the chapter list: ${e.message}. The book is at ${SITE})`);
   }
+}
+
+// ---- Concepts ------------------------------------------------------------------------------
+// The concept's name and plain definition, and the passages that teach it: from the map first,
+// then from the concept tags in the chapter sources (::: {.concept data-c="DE02"}).
+
+async function getJson(url) {
+  try {
+    const r = await get(url);
+    return r.status === 200 ? JSON.parse(r.body) : null;
+  } catch { return null; }
+}
+
+function taggedPassages(lines, id) {
+  // [{start, end}] for each fenced div tagged with this concept id.
+  const out = [];
+  const re = new RegExp(`^\\s*(:{3,})\\s*\\{[^}]*\\.concept\\b[^}]*data-c="[^"]*\\b${id}\\b`);
+  for (let i = 0; i < lines.length; i++) {
+    const m = re.exec(lines[i]);
+    if (!m) continue;
+    const fence = m[1].length;
+    let j = i + 1;
+    for (; j < lines.length; j++) {
+      const c = /^\s*(:{3,})\s*$/.exec(lines[j]);
+      if (c && c[1].length === fence) break;
+    }
+    out.push({ start: i, end: j });
+  }
+  return out;
+}
+
+async function conceptInfo(id) {
+  const info = { id, name: "", what: "", axis: "", passages: [], source: "" };
+  const file = CONCEPT_FILES[id.slice(0, 2)];
+  const list = file ? await getJson(`${RAW}scripts/grading/concepts/${file}.json`) : null;
+  const c = list && (list.concepts || []).find((x) => x.id === id);
+  if (c) { info.name = c.name || ""; info.what = c.what || ""; }
+  if (list) info.axis = list.axis || "";
+  const map = await getJson(`${RAW}scripts/grading/book-passages.json`);
+  if (map && Array.isArray(map[id]) && map[id].length) {
+    info.passages = map[id].map((p) => ({ stem: String(p.page || "").replace(/\.html$/, ""), anchor: p.anchor || "", section: p.section || "" }));
+    info.source = "book-passages.json";
+    return info;
+  }
+  // No map: look for the tag in each chapter's source.
+  try {
+    const r = await get(RAW + "_quarto.yml");
+    if (r.status !== 200) return info;
+    for (const m of r.body.matchAll(CHAPTER_LINE)) {
+      const q = await get(`${RAW}${m[1]}.qmd`).catch(() => null);
+      if (!q || q.status !== 200) continue;
+      const doc = scan(q.body);
+      for (const t of taggedPassages(doc.lines, id)) {
+        const h = [...doc.headings].reverse().find((x) => x.line < t.start && x.level >= 2);
+        if (h) info.passages.push({ stem: m[1], anchor: h.id, section: h.text });
+      }
+    }
+    if (info.passages.length) info.source = "concept tags in the chapter sources";
+  } catch { /* the caller reports that nothing was found */ }
+  return info;
 }
 
 async function main() {
@@ -175,7 +257,23 @@ async function main() {
   const pad = (n) => String(n).padStart(2, "0");
   const started = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
-  const raw = process.argv.slice(2).join(" ");
+  const { concept: conceptId, page } = splitArg(process.argv.slice(2).join(" "));
+  let concept = null;
+  let raw = page;
+  if (conceptId) {
+    concept = await conceptInfo(conceptId);
+    const named = parseArg(page);
+    if (!(named && named.stem && named.anchor)) {
+      // No section in the link: use the concept's first passage (on the linked page, if one was given).
+      const pick = concept.passages.find((p) => !named || !named.stem || p.stem === named.stem) || concept.passages[0];
+      if (!pick) {
+        console.log(`LEARN-SECTION-ERROR: could not find a passage in the course book for concept ${conceptId}${concept.name ? ` (${concept.name})` : ""}. The concept id may be mistyped, or the book may be unreachable.`);
+        await listChapters("Pick a section instead:");
+        return;
+      }
+      raw = `${SITE}${pick.stem}.html#${pick.anchor}`;
+    }
+  }
   const parsed = parseArg(raw);
   if (!parsed) {
     await listChapters("LEARN-NEED-CHAPTER: no section link was given.");
@@ -230,12 +328,33 @@ async function main() {
   })();
 
   console.log("LEARN-SECTION-OK");
+  if (concept) {
+    console.log(`Concept: ${concept.id}${concept.name ? ` ${concept.name}` : " (name not found)"}`);
+    if (concept.what) console.log(`Concept means: ${concept.what}`);
+    if (concept.axis) console.log(`Concept axis: ${concept.axis}`);
+  }
   console.log(`Chapter: ${chapter}`);
   console.log(`Section: ${h.text}`);
-  console.log(`URL: ${SITE}${parsed.stem}.html#${h.id}`);
+  console.log(`URL: ${SITE}${parsed.stem}.html${concept ? `?c=${concept.id}` : ""}#${h.id}`);
   console.log(`Slug: ${h.id.replace(/\./g, "")}`);
   console.log(`Source: ${rawUrl}`);
   console.log(`Fetched: ${started} (local time on this computer)`);
+  if (concept) {
+    // The tagged passage(s) for this concept inside the section, word for word.
+    const sectionEnd = h.line + text.split("\n").length;
+    const tags = taggedPassages(doc.lines, concept.id).filter((t) => t.start >= h.line && t.start < sectionEnd);
+    for (const t of tags) {
+      console.log(`----- CONCEPT PASSAGE START (${concept.id}) -----`);
+      console.log(doc.lines.slice(t.start + 1, t.end).join("\n").trim());
+      console.log("----- CONCEPT PASSAGE END -----");
+    }
+    if (!tags.length) console.log(`NOTE: no passage in this section is tagged ${concept.id}; the whole section teaches it.`);
+    const others = concept.passages.filter((p) => !(p.stem === parsed.stem && p.anchor.toLowerCase() === h.id.toLowerCase()));
+    if (others.length) {
+      console.log(`Other passages for ${concept.id}:`);
+      for (const p of others) console.log(`- ${p.section || p.anchor}\n  /learn ${SITE}${p.stem}.html?c=${concept.id}#${p.anchor}`);
+    }
+  }
   console.log("----- SECTION TEXT START -----");
   console.log(text);
   console.log("----- SECTION TEXT END -----");
