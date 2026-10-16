@@ -86,7 +86,7 @@ a first piece of level 2 work on that axis could be for their product.
 |---|---|---|
 | 1 | Followed | The work follows a template, a tutorial, or the agent's defaults. |
 | 2 | Directed | You said specifically what to build (a spec, acceptance criteria, exact instructions) and checked that it worked (a test, a check, or a demo showing it working). |
-| 3 | Decided | You challenged what the agent or the template proposed, weighed named options, and owned the trade-off in writing; or you found a real problem yourself (in testing, review, or use) and fixed it with a judgment about data, access, hosting, cost, or behavior. Fixing build errors, typos, or config is not level 3. |
+| 3 | Decided | You challenged what the agent or the template proposed, weighed named options, and wrote down which one you chose and why; or you found a real problem yourself (in testing, review, or use) and fixed it with a judgment about data, access, hosting, cost, or behavior. Fixing build errors, typos, or config is not level 3. |
 | 4 | Delivered | People outside your team use it, and you changed the work because of what they did or said, with the change committed. Shipping alone is not level 4. |
 
 What the next level often looks like, by axis:
