@@ -234,9 +234,9 @@ git add sprints/ && git commit -m "Sprint N review and retro" && git push
 ```
 
 Finally, remind them to submit the Sprint N Wrap-up on Canvas: the GitHub link to this file and
-their Loom demo link. Remind them that the course has to be able to watch the Loom: in Loom's Share
-settings, share it with scott.murff@byu.edu or set it to "Anyone with the link". A Loom the course
-cannot open is not graded until it is shared.
+their Loom demo link. Remind them to make sure Professor Murff can see the video: in Loom's Share
+settings, set it to "Anyone with the link" or share it with scott.murff@byu.edu. A video he cannot
+open is not graded until it is shared.
 
 If they want to change an answer later, they edit the file and commit again; that is fine.
 
