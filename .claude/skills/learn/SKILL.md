@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Learn one section of the MSB 341 course book with a tutor that follows the builder's own questions. Fetches the section's exact text (or, given a builder concept id such as DE02, the passage that teaches that concept), asks how well they know it (Developing, Proficient, or Strong, the exam's three bands) and plays that back, has a Strong prove it, teaches whatever the section holds from first principles wherever their questions lead, checks understanding with new cases instead of asking them to repeat it, offers a short check, invites an explanation from memory near the end, and commits a learning log to learning/. Use when the user types /learn with a link to a section of byu-strategy.github.io/product-management or a concept id ("/learn DE02", "Focus on DE02 ..."), or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
+description: Learn one section of a byu-strategy course book (the MSB 341 Product Management book, or another book on byu-strategy.github.io such as the AI PM Bootcamp site) with a tutor that follows the builder's own questions. Fetches the section's exact text (or, given a builder concept id such as DE02, the passage that teaches that concept), asks how well they know it (Developing, Proficient, or Strong, the exam's three bands) and plays that back, has a Strong prove it, teaches whatever the section holds from first principles wherever their questions lead, checks understanding with new cases instead of asking them to repeat it, offers a short check, invites an explanation from memory near the end, and commits a learning log to learning/. Use when the user types /learn with a link to a section of a book on byu-strategy.github.io or a concept id ("/learn DE02", "Focus on DE02 ..."), or says "teach me this section", "help me learn this chapter", or "quiz me on this section".
 argument-hint: "[section link from the course book, or a concept id such as DE02]"
 allowed-tools: Bash(node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" *)
 ---
@@ -29,15 +29,16 @@ source on GitHub when this skill started. Its first line is a status.
 
 !`node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" "$ARGUMENTS"`
 
-- **LEARN-SECTION-OK**: start. Keep the Section, URL, Slug, and Fetched lines for the log, and
+- **LEARN-SECTION-OK**: start. The **Book:** line says which book the section is from; say "the course book" for Product Management and name the site for any other book. Any other book has no exams, course, or practice form: use the same three bands and question types below, but do not mention exams, the course, or grades. Keep the Section, URL, Slug, and Fetched lines for the log, and
   the Concept line if there is one (see "One concept" below).
 - **LEARN-NEED-CHAPTER** or **LEARN-NEED-SECTION**: show the list and ask which one. Then run
   `node "${CLAUDE_SKILL_DIR}/scripts/fetch_section.mjs" "<section link>"`.
 - **LEARN-SECTION-ERROR**: say what went wrong in one sentence, show the list if there is one,
   and ask which section they meant.
 - **Anything else** (the fetcher did not run): say so, then fetch
-  `https://raw.githubusercontent.com/byu-strategy/product-management/main/<chapter>.qmd`
-  (their link's page name with `.html` swapped for `.qmd`) and take the `##` section whose
+  `https://raw.githubusercontent.com/byu-strategy/<book>/main/<chapter>.qmd`, where `<book>` is
+  the path after `byu-strategy.github.io/` in their link (`product-management` if the link has
+  none), and `<chapter>` is their link's page name with `.html` swapped for `.qmd`, and take the `##` section whose
   heading matches the anchor. For a concept id, read the published page instead
   (`https://byu-strategy.github.io/product-management/<page>.html?c=<ID>`, from the link or from
   `https://raw.githubusercontent.com/byu-strategy/product-management/main/scripts/grading/book-passages.json`)

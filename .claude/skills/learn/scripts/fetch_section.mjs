@@ -1,5 +1,8 @@
 #!/usr/bin/env node
-// Fetch one `##` section of the MSB 341 course book, word for word, from its source on GitHub.
+// Fetch one `##` section of a byu-strategy course book, word for word, from its source on GitHub.
+// The book is read from the link (byu-strategy.github.io/<book>/...) and fetched from the public
+// repo byu-strategy/<book>. With no book in the link (a bare chapter name or a concept id), it is
+// the MSB 341 book, product-management.
 //
 //   node fetch_section.mjs "https://byu-strategy.github.io/product-management/05-interface-and-flow.html#flows-before-screens"
 //   node fetch_section.mjs "https://byu-strategy.github.io/product-management/05-interface-and-flow.html"   (lists the sections)
@@ -19,10 +22,19 @@
 
 import https from "node:https";
 
-const SITE = "https://byu-strategy.github.io/product-management/";
-const REPO = "byu-strategy/product-management";
+const DEFAULT_BOOK = "product-management";
 const BRANCH = "main";
-const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/`;
+let BOOK = DEFAULT_BOOK;
+let SITE = `https://byu-strategy.github.io/${BOOK}/`;
+let RAW = `https://raw.githubusercontent.com/byu-strategy/${BOOK}/${BRANCH}/`;
+
+// Point SITE and RAW at the book named in the argument, if it names one.
+function useBookFrom(text) {
+  const m = /byu-strategy\.github\.io\/([\w.-]+)\//i.exec(text || "");
+  BOOK = m ? m[1] : DEFAULT_BOOK;
+  SITE = `https://byu-strategy.github.io/${BOOK}/`;
+  RAW = `https://raw.githubusercontent.com/byu-strategy/${BOOK}/${BRANCH}/`;
+}
 const CONCEPT_ID = /(?:[?&]c=|(?:^|[\s"'(<]))((?:AW|DI|DE|AA|AS|LL)\d{2})(?=$|[^\w])/i;
 const CONCEPT_FILES = { AW: "agentic", DI: "discovery", DE: "design", AA: "architecture", AS: "aisystems", LL: "launch" };
 const CHAPTER_LINE = /^\s*-\s+(\d\d[a-z]?-[\w-]+)\.qmd\s*$/gm;
@@ -162,7 +174,7 @@ function parseArg(raw) {
   arg = arg.split("?")[0];
   const file = arg.split("/").filter(Boolean).pop() || "";
   const stem = file.replace(/\.(html|qmd)$/i, "");
-  if (!/^[\w.-]+$/.test(stem) || stem === "product-management" || stem === "byu-strategy.github.io") {
+  if (!/^[\w.-]+$/.test(stem) || stem === BOOK || stem === "byu-strategy.github.io") {
     return { stem: "", anchor };
   }
   return { stem, anchor };
@@ -181,7 +193,7 @@ async function listChapters(reason) {
     const r = await get(RAW + "_quarto.yml");
     if (r.status !== 200) throw new Error(`HTTP ${r.status}`);
     const files = [...r.body.matchAll(CHAPTER_LINE)].map((m) => m[1]).filter((f) => !f.startsWith("00-") && Number(f.slice(0, 2)) <= 15);
-    console.log("Chapters of the course book (paste one, or a section link from its page):");
+    console.log(`Chapters of the book at ${SITE} (paste one, or a section link from its page):`);
     for (const f of files) {
       const [num, ...rest] = f.split("-");
       const words = rest.join(" ");
@@ -257,7 +269,9 @@ async function main() {
   const pad = (n) => String(n).padStart(2, "0");
   const started = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
-  const { concept: conceptId, page } = splitArg(process.argv.slice(2).join(" "));
+  const argText = process.argv.slice(2).join(" ");
+  useBookFrom(argText);
+  const { concept: conceptId, page } = splitArg(argText);
   let concept = null;
   let raw = page;
   if (conceptId) {
@@ -333,6 +347,7 @@ async function main() {
     if (concept.what) console.log(`Concept means: ${concept.what}`);
     if (concept.axis) console.log(`Concept axis: ${concept.axis}`);
   }
+  console.log(`Book: ${SITE}`);
   console.log(`Chapter: ${chapter}`);
   console.log(`Section: ${h.text}`);
   console.log(`URL: ${SITE}${parsed.stem}.html${concept ? `?c=${concept.id}` : ""}#${h.id}`);
