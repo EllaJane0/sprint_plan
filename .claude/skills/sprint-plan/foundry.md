@@ -29,7 +29,8 @@ section with their answers.
 Before the goal, ask: "Are you staffed on a client engagement this sprint?"
 
 - **Staffed:** their first item is **Build for that client**. Ask which client and which part of
-  the engagement they own. Then ask whether they have hours for a second item.
+  the engagement they own. Then ask: "Are you also working on anything else this sprint, such
+  as a Claude course?"
 - **Not staffed:** ask what they will do from the menu, one or two items:
   - **Build** for the Foundry (internal tools, business development with a prospective client, a
     customer story, recruiting) or for their own product (a studio project).
@@ -55,11 +56,11 @@ for Solo), Who will see it, Why this, Done looks like, Predicted difficulty.
 
 - **Staffed, but no client item.** Say once that staffed students build for their client first,
   then accept their answer.
-- **No one at the other end.** A Build item with no one named under Who will see it.
+- **Nobody named.** A Build item with no one named under Who will see it.
 - **Learn with no proof.** A Learn item whose Done looks like names no certificate and
   deliverable, or no logs and practice exam.
 - **Learn-only and too small.** A Learn-only sprint is allowed, with no limit, but it has to fill
-  two weeks. One course is hours of work; ask what else belongs in it.
+  two weeks. One course takes a few hours; ask what else they will learn in the sprint.
 - **My part is the team's goal.** On a team, if My part repeats the Goal, ask which part is
   theirs.
 

@@ -10,7 +10,7 @@ Agreed with Scott Murff, 2026-10-22.
 
 ## Fixed: the sprint
 
-- A sprint is two weeks. It is a timebox, not a project phase.
+- A sprint is a fixed two weeks. Its dates do not follow any project's phases.
 - Every enrolled student runs every sprint, whatever their staffing or placement.
 - Four deliverables every sprint: **Plan**, **Output**, **Review**, **Demo**.
 - The plan is graded for completion. Predicted difficulty is never graded.
