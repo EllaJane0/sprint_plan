@@ -12,6 +12,12 @@ Run `scripts/sprint_scan.py` in this skill's directory to do the reading. It nev
 anything anywhere. Its `SCAN_VERSION` line is how the course checks that your copy of this skill is
 current; `python3 <skill-dir>/scripts/sprint_scan.py --version` prints it.
 
+## Which course
+
+If `course.json` at the repo root says `"course": "ai-foundry"`, follow `foundry.md` in this
+skill's directory wherever it differs from the steps below. Otherwise follow the steps below
+exactly as written.
+
 ## Steps
 
 ### 1. Establish the sprint and its window

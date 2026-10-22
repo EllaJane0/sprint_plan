@@ -9,6 +9,19 @@ Write the plan file that opens a two-week sprint. It runs at the start of the sp
 is due on Canvas by that Wednesday at 11:59 PM and is graded for completion. The builder may
 change it later in the sprint, noting what changed and why.
 
+## Which course
+
+Before anything else, check `course.json` at the repo root.
+
+- **It says `"course": "ai-foundry"`:** this is an AI Foundry repo. Follow `foundry.md` in this
+  skill's directory wherever it differs from the steps below.
+- **There is no `course.json`, and the GitHub repo name contains `foundry`** (check
+  `git remote get-url origin`): ask once, "Is this your AI Foundry repo?" On yes, write
+  `course.json` containing `{"course": "ai-foundry"}` and follow `foundry.md`. On no, continue
+  below and write nothing.
+- **Otherwise:** this is MSB 341. Follow the steps below exactly as written. Do not ask about the
+  course and do not create `course.json`.
+
 ## Steps
 
 ### 1. New plan, or a change to the current one?
