@@ -123,7 +123,7 @@ running, or a teach-back of one concept applied to the student's own work.
 | Who it's for, allowed | Own product; client, embedded | Client, project; the organization; own product | Client, embedded |
 | Priority rule | None | Staffed students' Build is for their client first | The placement first |
 | Learn sources | Book chapters (through the course itself) | Claude courses; Product Management book with the practice exam | to set |
-| Learn-only sprint | n/a | At most once in fall, only when not staffed (default, to confirm) | to set |
+| Learn-only sprint | n/a | Allowed, no limit, when it covers two weeks of real learning, each item with its proof | to set |
 | Feedback report | HTML attached on Canvas | The Builder tab in the Foundry app | to set |
 
 **MSB 341 keeps its published Fall 2026 rules.** It already runs this model with Build only; the
