@@ -19,8 +19,8 @@ The plan is due **the Monday after the sprint starts, at 11:59 PM**, not Wednesd
 ## Context (step 2)
 
 Read the README as usual. A Foundry builder's README may still say MSB 341 on the **Built by**
-line; on the first run, change that line to "AI Foundry, BYU" and include `README.md` in the
-commit. If the Context section is blank, ask what they are working on this sprint and whether
+line; on the first run, change that line to "AI Foundry, BYU", rename the README heading
+`## Where the work lives` to `## Work files and links`, and include `README.md` in the commit. If the Context section is blank, ask what they are working on this sprint and whether
 they are staffed on a client engagement before the goal, and offer to fill in the Context
 section with their answers.
 

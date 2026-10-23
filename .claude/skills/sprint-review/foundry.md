@@ -8,11 +8,14 @@ ever disagree, the page wins.
 ## Projects (step 3)
 
 Also pre-select any project that is a repo in the `ai-foundry-byu` GitHub organization, or is
-listed under **Where the work lives** in the README. Client repos are the usual place Foundry work
+listed under **Work files and links** in the README (older READMEs call it **Where the work lives**). Client repos are the usual place Foundry work
 happens. Summarize their commits by date, message, and file name only, as `SKILL.md` already
 requires: client code and data never go in the report.
 
 ## The report (step 6)
+
+Title the section `## Where the work lives` in `SKILL.md` as `## Work files and links` instead.
+
 
 The plan has a **Menu** line with one or two items. Write **Against your plan** item by item:
 
@@ -51,5 +54,5 @@ as **What did the client or your users say?**. People are named by role ("the cl
 The **Sprint N Wrap-up** is due **Friday at 8:00 AM**, when studio starts: the GitHub link to
 this file and the Loom link. Add: if the client's confidentiality terms do not allow recording
 their data, record the demo on sample data and say so at the start of the video. Before
-submitting, check that **Where the work lives** in the README lists every repo, deployed app,
+submitting, check that **Work files and links** in the README lists every repo, deployed app,
 certificate, and document someone needs to check the output.
