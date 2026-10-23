@@ -17,10 +17,10 @@ requires: client code and data never go in the report.
 Title the section `## Where the work lives` in `SKILL.md` as `## Work files and links` instead.
 
 
-The plan has a **Menu** line with one or two items. Write **Against your plan** item by item:
+The plan has a **Menu** line with one or two items. Write the section `SKILL.md` calls **Against your plan** item by item, titled **Plan compared with the work**:
 
 ```markdown
-## Against your plan
+## Plan compared with the work
 
 **Goal was:** <from the plan file>
 
@@ -45,7 +45,7 @@ Say "Six quick questions for your retro" and ask these six in place of the five 
 5. **Actual difficulty, 1 to 5,** and why it differed from the difficulty you predicted.
 6. **What will you change next sprint?** One specific thing.
 
-The **Your retro** section gets one line per question in the same order, with question 2 written
+Title the retro section `## Your sprint retrospective` (it replaces `## Your retro` in `SKILL.md`). It gets one line per question in the same order, with question 2 written
 as **What did the client or your users say?**. People are named by role ("the client contact",
 "a user"), never by name.
 
