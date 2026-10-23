@@ -26,7 +26,7 @@ The plan has a **Menu** line with one or two items. Write **Against your plan** 
 **<menu item 2>:** <same>
 ```
 
-For a **Learn** item, also say whether the proof named in Done looks like is present: the
+For a **Learn** item, also say whether the proof named in What done looks like is present: the
 certificate (a link or a file in the repo) and the deliverable, or the `/learn` logs in the
 window and a practice exam result. State what you found; do not judge it.
 

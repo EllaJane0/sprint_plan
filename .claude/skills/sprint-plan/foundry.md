@@ -41,11 +41,11 @@ Build is any part of the value chain: discovery, design, engineering, go-to-mark
 sales and outreach, analytics, operations. Never steer a builder toward code.
 
 Then interview for these fields, one at a time, in this order: Teammates, Goal, My part (skip it
-for Solo), Who will see it, Why this, Done looks like, Predicted difficulty.
+for Solo), Who will see it, Why this, What done looks like, Predicted difficulty. The field is always called "What done looks like", in your questions and in the file; it is the same field `SKILL.md` calls Done looks like.
 
 - **Who will see it.** For each Build item: a client, user, or teammate, other than the builder
   and Professor Murff, who will use or see the work, and what they will see.
-- **Done looks like.** For a Learn item it must name the proof:
+- **What done looks like.** For a Learn item it must name the proof:
   - a Claude course: the certificate of completion, plus the thing the course teaches, built and
     used in real work (for example a Skill used on the client repo, an MCP server on the studio
     project's data, an evaluation harness);
@@ -57,7 +57,7 @@ for Solo), Who will see it, Why this, Done looks like, Predicted difficulty.
 - **Staffed, but no client item.** Say once that staffed students build for their client first,
   then accept their answer.
 - **Nobody named.** A Build item with no one named under Who will see it.
-- **Learn with no proof.** A Learn item whose Done looks like names no certificate and
+- **Learn with no proof.** A Learn item whose What done looks like names no certificate and
   deliverable, or no logs and practice exam.
 - **Learn-only and too small.** A Learn-only sprint is allowed, with no limit, but it has to fill
   two weeks. One course takes a few hours; ask what else they will learn in the sprint.
@@ -82,7 +82,7 @@ for Solo), Who will see it, Why this, Done looks like, Predicted difficulty.
 
 **Why this:** ...
 
-**Done looks like:** ...
+**What done looks like:** ...
 
 **Predicted difficulty:** N
 ```
