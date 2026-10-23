@@ -16,7 +16,8 @@ Before anything else, check `course.json` at the repo root.
 - **It says `"course": "ai-foundry"`:** this is an AI Foundry repo. Follow `foundry.md` in this
   skill's directory wherever it differs from the steps below.
 - **There is no `course.json`, and the GitHub repo name contains `foundry`** (check
-  `git remote get-url origin`): ask once, "Is this your AI Foundry repo?" On yes, write
+  `git remote get-url origin`): ask once, "Is this your AI Foundry repo?", with nothing before
+  it (do not describe the check). On yes, write
   `course.json` containing `{"course": "ai-foundry"}` and follow `foundry.md`. On no, continue
   below and write nothing.
 - **Otherwise:** this is MSB 341. Follow the steps below exactly as written. Do not ask about the
