@@ -3,7 +3,7 @@
 > One sentence: what this is and who it is for.
 
 **Where to see it:** [URL, or where the work lives: a live app, a published page, a model in this repo]
-**Built by:** [your name], MSB 341 Product Management, BYU
+**Built by:** [your name], AI Foundry, BYU
 
 ## Context
 
@@ -22,7 +22,7 @@ Fill this in during Sprint 1 and keep it current. Every sprint is read against i
 If your situation changes, revise this and note what changed. That is normal; a silent
 mismatch between this file and your work is not.
 
-## Where the work lives
+## Work files and links
 
 Everything someone would need to check your output. List each place on its own line.
 
