@@ -10,7 +10,9 @@
 - **Indigo-Institute/Main_Website** (client repo, private; whether it is shared with sdmurff could not be checked): 1 commit in the window.
   - Nov 3: "Remove hidden Indigo Promise block with outdated 50% refund claim" (about-us.html, locations.html, partner-with-indigo.html)
 - **Live:** https://indigoinstitute.com (tested with the website-reviewer subagent on Nov 5)
-- **Outside any repo:** the website-reviewer subagent, at `~/.claude/agents/website-reviewer.md`, created Nov 5.
+- **Subagent:** website-reviewer, created Nov 5 at `~/.claude/agents/website-reviewer.md`, with a copy in this repo at `.claude/agents/website-reviewer.md`.
+- **Placement agent write-up:** a Google Doc, linked in the README.
+- **Course completion:** screenshots in `learning/certificates/`.
 
 ## When you worked
 
@@ -67,9 +69,9 @@ None logged this sprint. The sprint's work advanced Agentic Workflow.
 
 **Goal was:** I will have learned more about subagent construction and limitations, and learned about the scope and responsibility of the placement agents.
 
-**Build for Indigo Institute, discovery (a write-up of the placement agent's context and requirements):** No write-up appears in this repo or the confirmed projects, and the README's Work files and links section does not list one. You reported that the write-up and the conversations with the placement coordinator and co-founder happened outside what this scan can see.
+**Build for Indigo Institute, discovery (a write-up of the placement agent's context and requirements):** The write-up is a Google Doc, linked in the README's Work files and links section; its contents were not read for this review. You reported that the conversations with the placement coordinator and co-founder happened outside what this scan can see.
 
-**Learn: Introduction to Subagents (Anthropic Academy):** The deliverable is present: the website-reviewer subagent was created on Nov 5 and run on indigoinstitute.com the same day. The certificate of completion was not found in the repo, and the README does not link it. The Nov 5 plan change shifted the sprint from building the placement agent to this course and the write-up, and the reason recorded in the plan is the builder's.
+**Learn: Introduction to Subagents (Anthropic Academy):** The deliverable is present: the website-reviewer subagent was created on Nov 5 and run on indigoinstitute.com the same day. The plan named a certificate of completion. The course awards no certificate or badge; its completion screen ("You finished Introduction to subagents") is saved in `learning/certificates/`, along with a passed Claude Code 101 quiz (5 of 5). The Nov 5 plan change shifted the sprint from building the placement agent to this course and the write-up, and the reason recorded in the plan is the builder's.
 
 ---
 

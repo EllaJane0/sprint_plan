@@ -26,10 +26,18 @@ mismatch between this file and your work is not.
 
 Everything someone would need to check your output. List each place on its own line.
 
-- **Repos:** [this repo, and any other repo your work happens in. Share it with `sdmurff` if you
-  can. A company repo you cannot share is fine: say so here, and
-  `/sprint-review` will summarize its commits (dates and messages, never code)]
-- **Live:** [the app, page, store listing, or file someone else can open]
+- **Repos:** this repo ([EllaJane0/sprint_plan](https://github.com/EllaJane0/sprint_plan),
+  public); Indigo-Institute/Main_Website (Indigo Institute's website, a private client repo, not
+  shared)
+- **Live:** [indigoinstitute.com](https://indigoinstitute.com)
+- **Placement agent write-up (Sprint 1):** [Google Doc](https://docs.google.com/document/d/1KKuI2h1S3LdU4UbbFqWscUfONokXsI0uvHjEwh7lNo0/edit?usp=share_link)
+- **Course completion (Sprint 1):**
+  [Introduction to Subagents](learning/certificates/2026-11-05-introduction-to-subagents-complete.png)
+  (the course awards no badge; this is its completion screen),
+  [Claude Code 101 quiz passed](learning/certificates/2026-11-05-claude-code-101-passed.png)
+- **Subagent (Sprint 1):** [`website-reviewer`](.claude/agents/website-reviewer.md), a website QA
+  subagent that checks for broken links and buttons, console and network errors, mobile layout,
+  and WCAG 2.1 AA accessibility; run on indigoinstitute.com on Nov 5
 
 ## What is in this repo
 
