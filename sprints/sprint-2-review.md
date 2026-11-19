@@ -96,7 +96,7 @@ None were logged this sprint. You studied no axis. The sprint's work advanced Ap
 
 **Did you hit the goal?** Yes! Built a working app that my husband is now using at the gym and super excited about. I also did a bunch of development work at indigo, but on the company claude, so the information isn't on here. That work included building a resume rewrite feature with Claude API, rerouting all of our backend flow, transferring supabase accounts, cost analysis for our netlify subscription, in depth security reviews and changes, as well as basic user flow redesign with more to come. I also routed everything through Github, set up VS Code and github branches with 5 employees and approved 8 PRs from other staff
 
-**What did the client or your users say?** Indigo is thrilled with the new backend and to have a lot of things cleaned up. My husband, [my husband] has never been so excited to work out, and has shared the app with many friends
+**What did the client or your users say?** Indigo is thrilled with the new backend and to have a lot of things cleaned up. My husband has never been so excited to work out, and has shared the app with many friends
 
 **What did the report show you?** I was surprised that the pokelift app was built in 3 days looking back, because it felt longer, mostly bc the pre build work was heavier
 
