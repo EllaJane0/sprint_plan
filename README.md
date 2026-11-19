@@ -9,15 +9,10 @@
 
 Fill this in during Sprint 1 and keep it current. Every sprint is read against it.
 
-- **My role:** [the hats you wear, and what you own. Most roles combine several: product,
-  engineering, design, go-to-market, pricing, analytics, operations. A solo builder wears most
-  of them]
-- **What I am working on:** [your product, or your part of a team's product. "Not decided" is
-  fine early on; list the options you are weighing]
-- **Who it is for:** [the customer or segment the work ultimately serves]
-- **Who uses my work:** [the specific person who will use what you make, and how you reach
-  them. On a team this can be your teammates: engineers using your specs, sales using your
-  pricing]
+- **My role:** [product builder, AI native, product manager]
+- **What I am working on:** [becoming a better, more techincal product manager, Indigo Institute LMS edits]
+- **Who it is for:** [me, indigo institute]
+- **Who uses my work:** [Myself and Indigo Institute]
 
 If your situation changes, revise this and note what changed. That is normal; a silent
 mismatch between this file and your work is not.
@@ -30,6 +25,7 @@ Everything someone would need to check your output. List each place on its own l
   public); Indigo-Institute/Main_Website (Indigo Institute's website, a private client repo, not
   shared)
 - **Live:** [indigoinstitute.com](https://indigoinstitute.com)
+- **PokéLift (Sprint 2):** repo [EllaJane0/poke-lift](https://github.com/EllaJane0/poke-lift) (public), live at [poke-lift.vercel.app](https://poke-lift.vercel.app)
 - **Placement agent write-up (Sprint 1):** [Google Doc](https://docs.google.com/document/d/1KKuI2h1S3LdU4UbbFqWscUfONokXsI0uvHjEwh7lNo0/edit?usp=share_link)
 - **Course completion (Sprint 1):**
   [Introduction to Subagents](learning/certificates/2026-11-05-introduction-to-subagents-complete.png)

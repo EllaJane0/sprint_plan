@@ -5,11 +5,11 @@ a brand new session act like a colleague who already knows what you are working 
 
 ## What I am working on
 
-- **My role:** [the hats you wear and what you own, from README.md]
-- **What it is:** [one sentence: your product, or your part of a team's product]
-- **Who it is for:** [a specific person or segment, see discovery/personas.md]
-- **Who uses my work:** [the customer, or teammates if your work feeds a team]
-- **Why they would use it:** [the problem, in their words]
+- **My role:** [product builder, AI native, product manager]
+- **What I am working on:** [becoming a better, more techincal product manager, Indigo Institute LMS edits]
+- **Who it is for:** [me, indigo institute]
+- **Who uses my work:** [Myself and Indigo Institute]
+- **Why they would use it:** [become a better product manager, help fine tune a LMS to student's needs]
 
 ## Current state
 
