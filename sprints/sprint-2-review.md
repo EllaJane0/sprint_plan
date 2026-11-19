@@ -94,14 +94,14 @@ None were logged this sprint. You studied no axis. The sprint's work advanced Ap
 
 ## Your sprint retrospective
 
-**Did you hit the goal?** Yes! Built a working app that my husband is now using at the gym and super excited about. I also did a bunch of development work at indigo, but on the company claude, so the information isnt on here. That work included building a resume rewrite feature with Claude API, rerouting all of our backend flow, transfering supabase accounts, cost analysis for our netlify subsscription, in depth security reviews and changes, as well as basic user flow redesign with more to come. I also routed everything through Github, set up VS Code and github branches with 5 employees and approved 8 PRs from other staff
+**Did you hit the goal?** Yes! Built a working app that my husband is now using at the gym and super excited about. I also did a bunch of development work at indigo, but on the company claude, so the information isn't on here. That work included building a resume rewrite feature with Claude API, rerouting all of our backend flow, transferring supabase accounts, cost analysis for our netlify subscription, in depth security reviews and changes, as well as basic user flow redesign with more to come. I also routed everything through Github, set up VS Code and github branches with 5 employees and approved 8 PRs from other staff
 
-**What did the client or your users say?** Indigo is thrilled with the new backendn and to have a lot of things cleaned up. My husband, [my husband] has never been so excited to work out, and has shared the app with many firends
+**What did the client or your users say?** Indigo is thrilled with the new backend and to have a lot of things cleaned up. My husband, [my husband] has never been so excited to work out, and has shared the app with many friends
 
-**What did the report show you?** I was supprised that the pokelift app was built in 3 days looking back, because it felt longer, mostly bc the pre build work was heavier
+**What did the report show you?** I was surprised that the pokelift app was built in 3 days looking back, because it felt longer, mostly bc the pre build work was heavier
 
-**If the plan changed, why?** The inital sprint plan includes less about indigo because two weeks ago, the cofounder was protecting her code, and not letting anyone else push to it, or me help her edit it. She came into town last week, and I was able to work nearly 20 hours with her and the staff to help them build a lot of cool things
+**If the plan changed, why?** The initial sprint plan includes less about indigo because two weeks ago, the cofounder was protecting her code, and not letting anyone else push to it, or me help her edit it. She came into town last week, and I was able to work nearly 20 hours with her and the staff to help them build a lot of cool things
 
-**Actual difficulty:** 3 - had to learn how to use netlify, and more about security, and work with someone esles codebase, which is always a little challanging
+**Actual difficulty:** 3 - had to learn how to use netlify, and more about security, and work with someone else's codebase, which is always a little challenging
 
-**What will you change next sprint?** It is sometimes difficult to plan bcause indigo needs come up daily, but I want to be better at scheuleign items
+**What will you change next sprint?** It is sometimes difficult to plan because indigo needs come up daily, but I want to be better at scheduling items
